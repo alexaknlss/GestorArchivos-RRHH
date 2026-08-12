@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Personas y Cultura</title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div>
+                <h1>Personas y Cultura</h1>
+                <span>RRHH - DIGITALIZACIÓN</span>
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button class="notification-button"
+                    type="button">
+
+                <i class="bi bi-bell"></i>
+
+            </button>
+
+
+            <div class="user-avatar">
+                ML
+            </div>
+
+
+            <div class="user-info">
+                <strong>María López</strong>
+                <span>Recursos Humanos</span>
+            </div>
+
+
+            <i class="bi bi-chevron-down user-arrow"></i>
+
+        </div>
+
+    </header>
+
+
+    <div class="app-container">
+
+        <aside class="sidebar">
+
+            <nav class="sidebar-menu">
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="menu-item">
+
+                    <i class="bi bi-house-door"></i>
+                    <span>Inicio</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="menu-item">
+
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <span>Cargas</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="menu-item">
+
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="menu-item">
+
+                    <i class="bi bi-folder"></i>
+                    <span>Documentos</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="menu-item">
+
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reportes</span>
+
+                </a>
+
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="menu-item active">
+
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a href="#"
+                   class="menu-item">
+
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Cerrar sesión</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <main class="main-content">
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

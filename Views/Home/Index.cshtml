@@ -1,0 +1,279 @@
+﻿@{
+    ViewData["Title"] = "Configuración";
+}
+
+
+<div class="configuration-card">
+
+
+    <div class="configuration-header">
+
+        <div class="configuration-header-icon">
+            <i class="bi bi-gear"></i>
+        </div>
+
+        <div>
+
+            <h2>Configuración</h2>
+
+            <p>
+                Define las ubicaciones donde se escanearán
+                y guardarán los archivos.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="folder-list">
+
+
+        <!-- CARPETA DE ESCANEO -->
+
+        <div class="folder-card">
+
+            <div class="folder-icon">
+                <i class="bi bi-printer"></i>
+            </div>
+
+
+            <div class="folder-info">
+
+                <h3>1. Carpeta de escaneo</h3>
+
+                <p>
+                    Selecciona la carpeta donde se
+                    escanearán los archivos.
+                </p>
+
+            </div>
+
+
+            <div class="folder-path">
+
+                <input type="text"
+                       id="rutaEscaneo"
+                       placeholder="Ninguna carpeta seleccionada"
+                       readonly />
+
+            </div>
+
+
+            <button type="button"
+                    class="btn-examinar"
+                    onclick="seleccionarCarpeta('rutaEscaneo')">
+
+                <i class="bi bi-folder"></i>
+
+                Examinar
+
+            </button>
+
+        </div>
+
+
+
+        <!-- CARPETA DE GUARDADO -->
+
+        <div class="folder-card">
+
+            <div class="folder-icon">
+                <i class="bi bi-folder-fill"></i>
+            </div>
+
+
+            <div class="folder-info">
+
+                <h3>2. Carpeta de guardado</h3>
+
+                <p>
+                    Selecciona la carpeta donde se
+                    guardarán los archivos escaneados.
+                </p>
+
+            </div>
+
+
+            <div class="folder-path">
+
+                <input type="text"
+                       id="rutaGuardado"
+                       placeholder="Ninguna carpeta seleccionada"
+                       readonly />
+
+            </div>
+
+
+            <button type="button"
+                    class="btn-examinar"
+                    onclick="seleccionarCarpeta('rutaGuardado')">
+
+                <i class="bi bi-folder"></i>
+
+                Examinar
+
+            </button>
+
+        </div>
+
+
+
+        <!-- CARPETA DE INCAPACIDADES -->
+
+        <div class="folder-card">
+
+            <div class="folder-icon">
+                <i class="bi bi-file-earmark-medical-fill"></i>
+            </div>
+
+
+            <div class="folder-info">
+
+                <h3>3. Carpeta de incapacidades</h3>
+
+                <p>
+                    Selecciona la carpeta donde se
+                    escanearán las incapacidades.
+                </p>
+
+            </div>
+
+
+            <div class="folder-path">
+
+                <input type="text"
+                       id="rutaIncapacidades"
+                       placeholder="Ninguna carpeta seleccionada"
+                       readonly />
+
+            </div>
+
+
+            <button type="button"
+                    class="btn-examinar"
+                    onclick="seleccionarCarpeta('rutaIncapacidades')">
+
+                <i class="bi bi-folder"></i>
+
+                Examinar
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="advice-box">
+
+        <div class="advice-icon">
+            <i class="bi bi-shield-check"></i>
+        </div>
+
+
+        <div class="advice-content">
+
+            <strong>Consejo</strong>
+
+            <p>
+                Asegúrate de que las carpetas seleccionadas
+                tengan permisos de lectura y escritura para
+                un correcto funcionamiento.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="configuration-actions">
+
+        <button type="button"
+                class="btn-clear"
+                onclick="limpiarRutas()">
+
+            <i class="bi bi-eraser"></i>
+
+            Limpiar
+
+        </button>
+
+
+        <button type="button"
+                class="btn-accept">
+
+            <i class="bi bi-check-circle"></i>
+
+            Aceptar
+
+        </button>
+
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        async function seleccionarCarpeta(inputId) {
+
+            const input =
+                document.getElementById(inputId);
+
+
+            if ('showDirectoryPicker' in window) {
+
+                try {
+
+                    const carpeta =
+                        await window.showDirectoryPicker();
+
+                    input.value = carpeta.name;
+
+                }
+                catch (error) {
+
+                    if (error.name !== 'AbortError') {
+
+                        alert(
+                            'No fue posible seleccionar la carpeta.'
+                        );
+
+                    }
+
+                }
+
+            }
+            else {
+
+                alert(
+                    'La selección de carpetas requiere ' +
+                    'Microsoft Edge o Google Chrome actualizado.'
+                );
+
+            }
+
+        }
+
+
+
+        function limpiarRutas() {
+
+            document.getElementById('rutaEscaneo').value = '';
+
+            document.getElementById('rutaGuardado').value = '';
+
+            document.getElementById('rutaIncapacidades').value = '';
+
+        }
+
+    </script>
+
+}
