@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "Contratos";
+}
+
+<div class="contract-page">
+
+    <div class="contract-header">
+
+        <div class="contract-header-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+        </div>
+
+        <div>
+            <h2>Gestión de contratos</h2>
+
+            <p>
+                Carga el archivo PDF generado por el escáner
+                para separar los contratos individuales.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="contract-upload-card">
+
+        <div class="upload-icon">
+            <i class="bi bi-cloud-arrow-up"></i>
+        </div>
+
+        <h3>Subir archivo PDF</h3>
+
+        <p>
+            Selecciona el archivo PDF que contiene los contratos
+            escaneados.
+        </p>
+
+        <input type="file"
+               id="pdfContrato"
+               accept=".pdf"
+               hidden />
+
+        <button type="button"
+                class="btn-select-pdf"
+                onclick="document.getElementById('pdfContrato').click()">
+
+            <i class="bi bi-folder2-open"></i>
+
+            Seleccionar PDF
+
+        </button>
+
+        <div id="archivoSeleccionado"
+     class="selected-file">
+
+    <span class="selected-file-name">
+        Ningún archivo seleccionado
+    </span>
+
+    <button type="button"
+            id="btnQuitarArchivo"
+            class="btn-remove-file"
+            title="Quitar archivo"
+            style="display: none;">
+
+        <i class="bi bi-x-lg"></i>
+
+    </button>
+
+</div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        const pdfInput =
+            document.getElementById("pdfContrato");
+
+        const archivoSeleccionado =
+            document.getElementById("archivoSeleccionado");
+
+        const nombreArchivo =
+            archivoSeleccionado.querySelector(
+                ".selected-file-name"
+            );
+
+        const btnQuitarArchivo =
+            document.getElementById("btnQuitarArchivo");
+
+
+        // Cuando se selecciona un archivo
+        pdfInput.addEventListener("change", function () {
+
+            if (this.files.length === 0) {
+
+                limpiarArchivo();
+
+                return;
+            }
+
+
+            const archivo = this.files[0];
+
+
+            // Verificar que sea PDF
+            if (archivo.type !== "application/pdf") {
+
+                alert("Por favor selecciona un archivo PDF.");
+
+                limpiarArchivo();
+
+                return;
+            }
+
+
+            // Mostrar nombre
+            nombreArchivo.textContent =
+                "📄 " + archivo.name;
+
+
+            // Mostrar botón quitar
+            btnQuitarArchivo.style.display =
+                "flex";
+
+        });
+
+
+        // Quitar archivo
+        btnQuitarArchivo.addEventListener(
+            "click",
+            function () {
+
+                limpiarArchivo();
+
+            }
+        );
+
+
+        // Función para limpiar
+        function limpiarArchivo() {
+
+            // Limpiar input
+            pdfInput.value = "";
+
+
+            // Restaurar texto
+            nombreArchivo.textContent =
+                "Ningún archivo seleccionado";
+
+
+            // Ocultar botón quitar
+            btnQuitarArchivo.style.display =
+                "none";
+
+        }
+
+    </script>
+
+}
