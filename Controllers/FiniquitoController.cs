@@ -3,56 +3,52 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GestorArchivos_RRHH.Controllers
 {
-    public class ContratoController : Controller
+    public class FiniquitoController : Controller
     {
-        // GET: Contrato
+        private readonly PdfSplitService _pdfSplitService;
+
+        public FiniquitoController()
+        {
+            _pdfSplitService = new PdfSplitService();
+        }
+
+        // GET: Finiquito
         public IActionResult Index()
         {
             return View();
         }
 
-
-        // =========================================
-        // PROCESAR CONTRATOS
-        // =========================================
-
+        // POST: Finiquito/Procesar
         [HttpPost]
-        public async Task<IActionResult> Procesar(
-            IFormFile pdfContrato
-        )
+        public async Task<IActionResult> Procesar(IFormFile pdfFiniquito)
         {
-            if (pdfContrato == null ||
-                pdfContrato.Length == 0)
+            if (pdfFiniquito == null || pdfFiniquito.Length == 0)
             {
-                ViewBag.Error =
+                TempData["Error"] =
                     "Debes seleccionar un archivo PDF.";
 
-                return View("Index");
+                return RedirectToAction(nameof(Index));
             }
 
-
             bool esPdf =
-                pdfContrato.ContentType.Equals(
+                pdfFiniquito.ContentType.Equals(
                     "application/pdf",
                     StringComparison.OrdinalIgnoreCase
                 )
                 ||
-                pdfContrato.FileName.EndsWith(
+                pdfFiniquito.FileName.EndsWith(
                     ".pdf",
                     StringComparison.OrdinalIgnoreCase
                 );
 
-
             if (!esPdf)
             {
-                ViewBag.Error =
+                TempData["Error"] =
                     "El archivo seleccionado debe ser un PDF.";
 
-                return View("Index");
+                return RedirectToAction(nameof(Index));
             }
 
-
-            // Carpeta temporal para el PDF original
             string carpetaTemporal =
                 Path.Combine(
                     Path.GetTempPath(),
@@ -60,41 +56,32 @@ namespace GestorArchivos_RRHH.Controllers
                     "Temporal"
                 );
 
-
             Directory.CreateDirectory(
                 carpetaTemporal
             );
 
+            string nombreTemporal =
+                $"{Guid.NewGuid()}.pdf";
 
             string rutaPdfOriginal =
                 Path.Combine(
                     carpetaTemporal,
-                    $"{Guid.NewGuid()}.pdf"
+                    nombreTemporal
                 );
 
-
-            /*
-             * Los contratos individuales se crean
-             * temporalmente aquí.
-             *
-             * Después se descargan desde el navegador.
-             */
-            string carpetaContratos =
+            string carpetaDestino =
                 Path.Combine(
                     Path.GetTempPath(),
                     "GestorArchivosRRHH",
-                    "Contratos"
+                    "Finiquitos"
                 );
 
-
             Directory.CreateDirectory(
-                carpetaContratos
+                carpetaDestino
             );
-
 
             try
             {
-                // Guardar temporalmente el PDF subido
                 using (
                     FileStream stream =
                         new FileStream(
@@ -103,57 +90,50 @@ namespace GestorArchivos_RRHH.Controllers
                         )
                 )
                 {
-                    await pdfContrato.CopyToAsync(
+                    await pdfFiniquito.CopyToAsync(
                         stream
                     );
                 }
 
-
                 /*
-                 * Usamos el servicio que ya creamos.
-                 *
-                 * CONTRATOS:
-                 * 1 página = 1 PDF individual
+                 * FINIQUITOS:
+                 * 3 páginas = 1 PDF
                  */
-                PdfSplitService pdfSplitService =
-                    new PdfSplitService();
-
-
                 int cantidadGenerada =
-                    pdfSplitService.DividirPdf(
+                    _pdfSplitService.DividirPdf(
                         rutaPdfOriginal,
-                        carpetaContratos,
-                        paginasPorDocumento: 1,
-                        prefijoArchivo: "Contrato"
+                        carpetaDestino,
+                        paginasPorDocumento: 3,
+                        prefijoArchivo: "Finiquito"
                     );
 
-
-                // Obtener los nombres de los PDF creados
+                /*
+                 * Buscar todos los PDFs generados
+                 * y preparar la lista para la vista.
+                 */
                 List<string> archivosGenerados =
                     Directory
                         .GetFiles(
-                            carpetaContratos,
-                            "Contrato_*.pdf"
+                            carpetaDestino,
+                            "Finiquito_*.pdf"
                         )
                         .Select(
-                            ruta =>
-                                Path.GetFileName(ruta)
+                            ruta => Path.GetFileName(ruta)
                         )
                         .OrderBy(
                             nombre => nombre
                         )
                         .ToList();
 
-
-                // Mandar la lista a la vista
                 ViewBag.ArchivosGenerados =
                     archivosGenerados;
 
+                ViewBag.CantidadGenerada =
+                    cantidadGenerada;
 
                 ViewBag.MensajeExito =
                     $"Proceso completado correctamente. " +
-                    $"Se generaron {cantidadGenerada} contratos.";
-
+                    $"Se generaron {cantidadGenerada} finiquitos.";
 
                 return View("Index");
             }
@@ -162,15 +142,10 @@ namespace GestorArchivos_RRHH.Controllers
                 ViewBag.Error =
                     ex.Message;
 
-
                 return View("Index");
             }
             finally
             {
-                /*
-                 * Eliminamos únicamente el PDF grande
-                 * que se utilizó para procesar.
-                 */
                 if (
                     System.IO.File.Exists(
                         rutaPdfOriginal
@@ -184,101 +159,52 @@ namespace GestorArchivos_RRHH.Controllers
             }
         }
 
-
-        // =========================================
-        // DESCARGAR CONTRATO
-        // =========================================
-
+        // GET: Finiquito/Descargar?nombreArchivo=Finiquito_0001.pdf
         [HttpGet]
         public IActionResult Descargar(
             string nombreArchivo
         )
         {
-            if (
-                string.IsNullOrWhiteSpace(
-                    nombreArchivo
-                )
-            )
+            if (string.IsNullOrWhiteSpace(
+                nombreArchivo
+            ))
             {
                 return NotFound();
             }
 
-
             /*
-             * Protección para impedir que desde
-             * la URL envíen una ruta diferente.
+             * Evita que alguien intente mandar
+             * rutas completas o ../ desde la URL.
              */
             nombreArchivo =
                 Path.GetFileName(
                     nombreArchivo
                 );
 
-
-            string carpetaContratos =
+            string carpetaDestino =
                 Path.Combine(
                     Path.GetTempPath(),
                     "GestorArchivosRRHH",
-                    "Contratos"
+                    "Finiquitos"
                 );
-
 
             string rutaArchivo =
                 Path.Combine(
-                    carpetaContratos,
+                    carpetaDestino,
                     nombreArchivo
                 );
 
-
-            if (
-                !System.IO.File.Exists(
-                    rutaArchivo
-                )
-            )
+            if (!System.IO.File.Exists(
+                rutaArchivo
+            ))
             {
                 return NotFound();
             }
-
 
             byte[] contenido =
                 System.IO.File.ReadAllBytes(
                     rutaArchivo
                 );
-
-
-            /*
-             * Cuando ASP.NET termine de enviar
-             * el archivo al navegador,
-             * eliminamos la copia temporal.
-             */
-            Response.OnCompleted(
-                () =>
-                {
-                    try
-                    {
-                        if (
-                            System.IO.File.Exists(
-                                rutaArchivo
-                            )
-                        )
-                        {
-                            System.IO.File.Delete(
-                                rutaArchivo
-                            );
-                        }
-                    }
-                    catch
-                    {
-                        /*
-                         * Si falla la limpieza,
-                         * no interrumpimos la descarga.
-                         */
-                    }
-
-
-                    return Task.CompletedTask;
-                }
-            );
-
 
             return File(
                 contenido,

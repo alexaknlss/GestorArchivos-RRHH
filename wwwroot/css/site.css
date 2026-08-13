@@ -874,3 +874,223 @@ body {
         max-width: 280px;
     }
 }
+
+/* =========================================================
+   PROCESAMIENTO DE CONTRATOS
+   ========================================================= */
+
+.contract-process-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+}
+
+
+/* =========================
+   BOTÓN PROCESAR
+   ========================= */
+
+.btn-process-pdf {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 0 25px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient( 135deg, var(--verde-principal), var(--verde-oscuro) );
+    color: var(--blanco);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 7px 17px rgba(20, 92, 66, 0.18);
+    transition: all 0.2s ease;
+}
+
+    .btn-process-pdf:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 9px 20px rgba(20, 92, 66, 0.24);
+    }
+
+    .btn-process-pdf:disabled {
+        background: #c9d5cf;
+        color: #ffffff;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+
+/* =========================
+   INFORMACIÓN
+   ========================= */
+
+.contract-info {
+    max-width: 650px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 18px auto 0;
+    color: var(--texto-secundario);
+    font-size: 12px;
+}
+
+    .contract-info i {
+        color: var(--verde-principal);
+        font-size: 15px;
+    }
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 650px) {
+
+    .btn-process-pdf {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .contract-info {
+        align-items: flex-start;
+        text-align: left;
+        line-height: 1.5;
+    }
+}
+
+/* =========================================================
+   FINIQUITOS
+   ========================================================= */
+
+.finiquito-page {
+    width: 100%;
+}
+
+.finiquito-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 26px;
+}
+
+.finiquito-header-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 14px;
+    background: #edf8f2;
+    color: #08775c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.finiquito-header h2 {
+    margin: 0 0 5px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.finiquito-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #667085;
+}
+
+
+/* TARJETA PRINCIPAL */
+
+.finiquito-upload-card {
+    width: 100%;
+    min-height: 445px;
+    background: #ffffff;
+    border: 1px solid #cfe2d9;
+    border-radius: 16px;
+    padding: 44px 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+    .finiquito-upload-card .upload-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #edf8f2;
+        color: #08775c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin-bottom: 20px;
+    }
+
+    .finiquito-upload-card h3 {
+        margin: 0 0 12px 0;
+        font-size: 21px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .finiquito-upload-card > p {
+        margin: 0 0 25px 0;
+        color: #667085;
+        font-size: 14px;
+        text-align: center;
+    }
+
+
+/* BOTÓN PROCESAR */
+
+.finiquito-process-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+    .finiquito-process-actions .btn-process-pdf {
+        min-width: 190px;
+    }
+
+
+/* INFORMACIÓN INFERIOR */
+
+.finiquito-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: #667085;
+}
+
+    .finiquito-info i {
+        color: #08775c;
+        font-size: 15px;
+    }
+
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .finiquito-header h2 {
+        font-size: 24px;
+    }
+
+    .finiquito-upload-card {
+        padding: 32px 20px;
+        min-height: 400px;
+    }
+
+    .finiquito-process-actions .btn-process-pdf {
+        width: 100%;
+    }
+}

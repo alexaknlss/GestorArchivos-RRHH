@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Contratos";
+    ViewData["Title"] = "Finiquitos";
 
     var archivosGenerados =
         ViewBag.ArchivosGenerados as List<string>;
@@ -33,101 +33,76 @@
 }
 
 
-<div class="contract-page">
+<div class="finiquito-page">
 
-    <!-- ========================= -->
     <!-- ENCABEZADO -->
-    <!-- ========================= -->
 
-    <div class="contract-header">
+    <div class="finiquito-header">
 
-        <div class="contract-header-icon">
-            <i class="bi bi-file-earmark-text-fill"></i>
+        <div class="finiquito-header-icon">
+            <i class="bi bi-file-earmark-check-fill"></i>
         </div>
 
         <div>
-
-            <h2>
-                Gestión de contratos
-            </h2>
+            <h2>Gestión de finiquitos</h2>
 
             <p>
                 Carga el archivo PDF generado por el escáner
-                para separar los contratos individuales.
+                para separar los finiquitos individuales.
             </p>
-
         </div>
 
     </div>
 
 
-    <!-- ========================= -->
     <!-- FORMULARIO -->
-    <!-- ========================= -->
 
-    <form asp-controller="Contrato"
+    <form asp-controller="Finiquito"
           asp-action="Procesar"
           method="post"
           enctype="multipart/form-data"
-          id="formContrato">
+          id="formFiniquito">
 
-        <div class="contract-upload-card">
-
+        <div class="finiquito-upload-card">
 
             <div class="upload-icon">
-
                 <i class="bi bi-cloud-arrow-up"></i>
-
             </div>
 
-
-            <h3>
-                Subir archivo PDF
-            </h3>
-
+            <h3>Subir archivo PDF</h3>
 
             <p>
                 Selecciona el archivo PDF que contiene
-                los contratos escaneados.
+                los documentos de finiquito escaneados.
             </p>
 
 
-            <!-- PDF -->
-
             <input type="file"
-                   id="pdfContrato"
-                   name="pdfContrato"
+                   id="pdfFiniquito"
+                   name="pdfFiniquito"
                    accept=".pdf,application/pdf"
                    hidden />
 
 
-            <!-- SELECCIONAR PDF -->
-
             <button type="button"
                     class="btn-select-pdf"
-                    onclick="document.getElementById('pdfContrato').click()">
+                    onclick="document.getElementById('pdfFiniquito').click()">
 
                 <i class="bi bi-folder2-open"></i>
-
                 Seleccionar PDF
 
             </button>
 
 
-            <!-- ARCHIVO SELECCIONADO -->
-
-            <div id="archivoSeleccionado"
+            <div id="archivoSeleccionadoFiniquito"
                  class="selected-file">
 
                 <span class="selected-file-name">
-
                     Ningún archivo seleccionado
-
                 </span>
 
-
                 <button type="button"
-                        id="btnQuitarArchivo"
+                        id="btnQuitarFiniquito"
                         class="btn-remove-file"
                         title="Quitar archivo"
                         style="display: none;">
@@ -139,46 +114,38 @@
             </div>
 
 
-            <!-- PROCESAR -->
-
-            <div class="contract-process-actions">
+            <div class="finiquito-process-actions">
 
                 <button type="submit"
-                        id="btnProcesarContrato"
+                        id="btnProcesarFiniquito"
                         class="btn-process-pdf"
                         disabled>
 
                     <i class="bi bi-scissors"></i>
-
-                    Procesar contratos
+                    Procesar finiquitos
 
                 </button>
 
             </div>
 
 
-            <!-- INFORMACIÓN -->
-
-            <div class="contract-info">
+            <div class="finiquito-info">
 
                 <i class="bi bi-info-circle"></i>
 
                 <span>
-                    Cada página del archivo será generada
-                    como un contrato PDF individual.
+                    Cada grupo de 3 páginas será generado
+                    como un finiquito PDF individual.
                 </span>
 
             </div>
-
 
         </div>
 
     </form>
 
 
-    <!-- ========================= -->
     <!-- RESULTADOS -->
-    <!-- ========================= -->
     @if (archivosGenerados != null &&
              archivosGenerados.Count > 0)
     {
@@ -189,13 +156,9 @@
                 <div>
 
                     <h3>
-
                         <i class="bi bi-check-circle-fill"></i>
-
-                        Contratos generados
-
+                        Finiquitos generados
                     </h3>
-
 
                     <p>
                         Se generaron
@@ -217,11 +180,8 @@
                         <div class="finiquito-file-info">
 
                             <div class="finiquito-file-icon">
-
                                 <i class="bi bi-file-earmark-pdf"></i>
-
                             </div>
-
 
                             <div>
 
@@ -241,7 +201,6 @@
                         <div class="finiquito-file-status">
 
                             <i class="bi bi-check-circle-fill"></i>
-
                             Listo
 
                         </div>
@@ -261,18 +220,14 @@
 {
     <script>
 
-        // =========================================
-        // ELEMENTOS
-        // =========================================
-
         const pdfInput =
             document.getElementById(
-                "pdfContrato"
+                "pdfFiniquito"
             );
 
         const archivoSeleccionado =
             document.getElementById(
-                "archivoSeleccionado"
+                "archivoSeleccionadoFiniquito"
             );
 
         const nombreArchivo =
@@ -280,25 +235,23 @@
                 ".selected-file-name"
             );
 
-        const btnQuitarArchivo =
+        const btnQuitar =
             document.getElementById(
-                "btnQuitarArchivo"
+                "btnQuitarFiniquito"
             );
 
-        const btnProcesarContrato =
+        const btnProcesar =
             document.getElementById(
-                "btnProcesarContrato"
+                "btnProcesarFiniquito"
             );
 
-        const formContrato =
+        const formFiniquito =
             document.getElementById(
-                "formContrato"
+                "formFiniquito"
             );
 
 
-        // =========================================
         // SELECCIONAR PDF
-        // =========================================
 
         pdfInput.addEventListener(
             "change",
@@ -307,8 +260,8 @@
                 if (this.files.length === 0) {
 
                     limpiarArchivo();
-
                     return;
+
                 }
 
                 const archivo =
@@ -328,28 +281,26 @@
                     );
 
                     limpiarArchivo();
-
                     return;
+
                 }
 
                 nombreArchivo.textContent =
                     archivo.name;
 
-                btnQuitarArchivo.style.display =
+                btnQuitar.style.display =
                     "flex";
 
-                btnProcesarContrato.disabled =
+                btnProcesar.disabled =
                     false;
 
             }
         );
 
 
-        // =========================================
         // QUITAR ARCHIVO
-        // =========================================
 
-        btnQuitarArchivo.addEventListener(
+        btnQuitar.addEventListener(
             "click",
             function () {
 
@@ -359,11 +310,9 @@
         );
 
 
-        // =========================================
         // PROCESAR
-        // =========================================
 
-        formContrato.addEventListener(
+        formFiniquito.addEventListener(
             "submit",
             function () {
 
@@ -374,12 +323,13 @@
                     );
 
                     return false;
+
                 }
 
-                btnProcesarContrato.disabled =
+                btnProcesar.disabled =
                     true;
 
-                btnProcesarContrato.innerHTML =
+                btnProcesar.innerHTML =
                     `
                         <span
                             class="spinner-border spinner-border-sm"
@@ -393,9 +343,7 @@
         );
 
 
-        // =========================================
         // LIMPIAR
-        // =========================================
 
         function limpiarArchivo() {
 
@@ -405,24 +353,23 @@
             nombreArchivo.textContent =
                 "Ningún archivo seleccionado";
 
-            btnQuitarArchivo.style.display =
+            btnQuitar.style.display =
                 "none";
 
-            btnProcesarContrato.disabled =
+            btnProcesar.disabled =
                 true;
 
-            btnProcesarContrato.innerHTML =
+            btnProcesar.innerHTML =
                 `
                     <i class="bi bi-scissors"></i>
-
-                    Procesar contratos
+                    Procesar finiquitos
                 `;
 
         }
 
 
         // =========================================
-        // DESCARGA AUTOMÁTICA
+        // DESCARGAR AUTOMÁTICAMENTE LOS FINIQUITOS
         // =========================================
 
         @if (archivosGenerados != null &&
@@ -438,7 +385,7 @@
                             );
 
                         const urlDescarga =
-                            '@Url.Action("Descargar", "Contrato")';
+                            '@Url.Action("Descargar", "Finiquito")';
 
 
                         window.addEventListener(
