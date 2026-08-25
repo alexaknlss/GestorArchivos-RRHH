@@ -11,9 +11,7 @@
 }
 
 
-/* =========================
-   GENERAL
-========================= */
+/* general */
 
 * {
     box-sizing: border-box;
@@ -32,9 +30,7 @@ body {
 }
 
 
-/* =========================
-   BARRA SUPERIOR
-========================= */
+/* superior scroll */
 
 .topbar {
     position: fixed;
@@ -53,9 +49,7 @@ body {
 }
 
 
-/* =========================
-   MARCA
-========================= */
+/* brands*/
 
 .brand {
     display: flex;
@@ -88,9 +82,7 @@ body {
 }
 
 
-/* =========================
-   USUARIO
-========================= */
+/* user*/
 
 .topbar-right {
     display: flex;
@@ -146,9 +138,7 @@ body {
 }
 
 
-/* =========================
-   CONTENEDOR GENERAL
-========================= */
+/* content general */
 
 .app-container {
     display: flex;
@@ -157,9 +147,7 @@ body {
 }
 
 
-/* =========================
-   MENÚ LATERAL
-========================= */
+/* menu lateral */
 
 .sidebar {
     position: fixed;
@@ -217,9 +205,7 @@ body {
 }
 
 
-/* =========================
-   CONTENIDO PRINCIPAL
-========================= */
+/* content principal */
 
 .main-content {
     width: calc(100% - 235px);
@@ -228,9 +214,7 @@ body {
 }
 
 
-/* =========================
-   TARJETA CONFIGURACIÓN
-========================= */
+/* =target settings */
 
 .configuration-card {
     width: 100%;
@@ -244,9 +228,7 @@ body {
 }
 
 
-/* =========================
-   ENCABEZADO
-========================= */
+/* header */
 
 .configuration-header {
     display: flex;
@@ -278,9 +260,7 @@ body {
 }
 
 
-/* =========================
-   LISTA DE CARPETAS
-========================= */
+/* list folders */
 
 .folder-list {
     display: flex;
@@ -289,9 +269,7 @@ body {
 }
 
 
-/* =========================
-   TARJETA DE CADA CARPETA
-========================= */
+/* target or folder card */
 
 .folder-card {
     display: grid;
@@ -312,9 +290,7 @@ body {
     }
 
 
-/* =========================
-   ICONO DE CARPETA
-========================= */
+/*icon */
 
 .folder-icon {
     width: 70px;
@@ -329,9 +305,7 @@ body {
 }
 
 
-/* =========================
-   TEXTO DE CARPETA
-========================= */
+/* txt folder */
 
 .folder-info h3 {
     margin: 0 0 8px;
@@ -348,9 +322,7 @@ body {
 }
 
 
-/* =========================
-   RUTA DE CARPETA
-========================= */
+/* url file*/
 
 .folder-path {
     min-width: 0;
@@ -374,9 +346,7 @@ body {
         }
 
 
-/* =========================
-   BOTÓN EXAMINAR
-========================= */
+/* btn examinar  */
 
 .btn-examinar {
     min-width: 125px;
@@ -402,9 +372,7 @@ body {
     }
 
 
-/* =========================
-   CONSEJO
-========================= */
+/* consejos */
 
 .advice-box {
     display: flex;
@@ -436,9 +404,7 @@ body {
 }
 
 
-/* =========================
-   BOTONES INFERIORES
-========================= */
+/* btn inferior */
 
 .configuration-actions {
     display: flex;
@@ -463,7 +429,7 @@ body {
 }
 
 
-/* LIMPIAR */
+/* clear+ */
 
 .btn-clear {
     border: 1px solid #b8cbc1;
@@ -476,7 +442,7 @@ body {
     }
 
 
-/* ACEPTAR */
+/* acepted */
 
 .btn-accept {
     min-width: 135px;
@@ -492,9 +458,7 @@ body {
     }
 
 
-/* =========================
-   RESPONSIVE TABLET
-========================= */
+/* responsive tablet */
 
 @media (max-width: 1100px) {
 
@@ -508,9 +472,7 @@ body {
 }
 
 
-/* =========================
-   RESPONSIVE PANTALLA MEDIA
-========================= */
+/* responsive pantalla media */
 
 @media (max-width: 800px) {
 
@@ -542,9 +504,7 @@ body {
 }
 
 
-/* =========================
-   RESPONSIVE MÓVIL
-========================= */
+/* responsie movil */
 
 @media (max-width: 650px) {
 
@@ -589,9 +549,7 @@ body {
     }
 }
 
-/* =========================================================
-   CONTRATOS
-   ========================================================= */
+/* contratos */
 
 .contract-page {
     width: 100%;
@@ -600,9 +558,7 @@ body {
 }
 
 
-/* =========================
-   ENCABEZADO
-   ========================= */
+/* header */
 
 .contract-header {
     display: flex;
@@ -638,9 +594,7 @@ body {
 }
 
 
-/* =========================
-   TARJETA DE CARGA
-   ========================= */
+/* target carga*/
 
 .contract-upload-card {
     background: var(--blanco);
@@ -658,9 +612,7 @@ body {
     }
 
 
-/* =========================
-   ICONO DE SUBIDA
-   ========================= */
+/* icon saving */
 
 .upload-icon {
     width: 78px;
@@ -676,9 +628,7 @@ body {
 }
 
 
-/* =========================
-   TITULO
-   ========================= */
+/* title */
 
 .contract-upload-card h3 {
     margin: 0 0 10px 0;
@@ -701,9 +651,7 @@ body {
 }
 
 
-/* =========================
-   BOTÓN SELECCIONAR PDF
-   ========================= */
+/* btn selected pdf */
 
 .btn-select-pdf {
     display: inline-flex;
@@ -738,9 +686,7 @@ body {
     }
 
 
-/* =========================
-   ARCHIVO SELECCIONADO
-   ========================= */
+/* file selected */
 
 .selected-file {
     max-width: 650px;
@@ -755,9 +701,7 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-/* =========================
-   ARCHIVO SELECCIONADO
-   ========================= */
+/*file selected */
 
 .selected-file {
     display: flex;
@@ -787,9 +731,7 @@ body {
 }
 
 
-/* =========================
-   BOTÓN QUITAR ARCHIVO
-   ========================= */
+/*btn removed file*/
 
 .btn-remove-file {
     width: 32px;
@@ -818,9 +760,7 @@ body {
     }
 
 
-/* =========================
-   RESPONSIVE TABLET
-   ========================= */
+/*responsive tablet*/
 
 @media (max-width: 900px) {
 
@@ -830,9 +770,7 @@ body {
 }
 
 
-/* =========================
-   RESPONSIVE MÓVIL
-   ========================= */
+/* responsive movil*/
 
 @media (max-width: 650px) {
 
@@ -875,9 +813,7 @@ body {
     }
 }
 
-/* =========================================================
-   PROCESAMIENTO DE CONTRATOS
-   ========================================================= */
+/*processing contratos*/
 
 .contract-process-actions {
     display: flex;
@@ -886,9 +822,7 @@ body {
 }
 
 
-/* =========================
-   BOTÓN PROCESAR
-   ========================= */
+/*btn procesing */
 
 .btn-process-pdf {
     min-height: 46px;
@@ -921,9 +855,7 @@ body {
     }
 
 
-/* =========================
-   INFORMACIÓN
-   ========================= */
+/* information */
 
 .contract-info {
     max-width: 650px;
@@ -942,9 +874,7 @@ body {
     }
 
 
-/* =========================
-   RESPONSIVE
-   ========================= */
+/* responsive */
 
 @media (max-width: 650px) {
 
@@ -960,9 +890,7 @@ body {
     }
 }
 
-/* =========================================================
-   FINIQUITOS
-   ========================================================= */
+/* finiquitos  */
 
 .finiquito-page {
     width: 100%;
@@ -1002,7 +930,7 @@ body {
 }
 
 
-/* TARJETA PRINCIPAL */
+/* target principal */
 
 .finiquito-upload-card {
     width: 100%;
@@ -1046,7 +974,7 @@ body {
     }
 
 
-/* BOTÓN PROCESAR */
+/* btn procesing  */
 
 .finiquito-process-actions {
     margin-top: 20px;
@@ -1059,7 +987,7 @@ body {
     }
 
 
-/* INFORMACIÓN INFERIOR */
+/* information inferior */
 
 .finiquito-info {
     display: flex;
@@ -1077,7 +1005,7 @@ body {
     }
 
 
-/* RESPONSIVE */
+/* responsive */
 
 @media (max-width: 768px) {
 
@@ -1093,4 +1021,481 @@ body {
     .finiquito-process-actions .btn-process-pdf {
         width: 100%;
     }
+}
+
+/*deaqui para abajo*/
+
+/* styles page contratos */
+
+.contract-page {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* css header */
+
+.contract-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.contract-header-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--verde-claro);
+    color: var(--verde-principal);
+    font-size: 27px;
+    flex-shrink: 0;
+}
+
+.contract-header h2 {
+    margin: 0 0 5px 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+.contract-header p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--texto-secundario);
+}
+
+/* target principal */
+
+.contract-upload-card {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    padding: 48px 40px;
+    box-shadow: var(--sombra);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .contract-upload-card:hover {
+        border-color: #c8dbd1;
+        box-shadow: 0 12px 30px rgba(23, 79, 57, 0.10);
+    }
+
+/* icon superior  */
+
+.upload-icon {
+    width: 78px;
+    height: 78px;
+    margin: 0 auto 21px auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--verde-claro);
+    color: var(--verde-principal);
+    font-size: 32px;
+}
+
+/* Container de file */
+
+.upload-files-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+
+
+/* div imajen  */
+
+.upload-item {
+    position: relative;
+    background: #f8faf9; /*fondo base */
+    border: 2px dashed var(--borde);
+    border-radius: 12px;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+    min-height: 200px; /* altura  */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+     /* texto sobre imajen */
+    z-index: 0;
+    overflow: hidden; /* hidden evita que la imajen se salga  */
+}
+    .upload-item p {
+        font-weight: bold;
+    }
+
+
+    .upload-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('/Images/stg.png');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.3; /* opacidad de images */
+        z-index: -1;
+    }
+
+    .upload-item:hover {
+        border-color: var(--verde-principal);
+    }
+/* fin imajen */
+
+    .upload-item:hover {
+        border-color: var(--verde-principal);
+    }
+
+    .upload-item h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--texto);
+        margin: 0 0 0.3rem;
+    }
+
+    .upload-item p {
+        font-size: 0.85rem;
+        color: var(--texto-secundario);
+        margin: 0 0 1.2rem;
+        line-height: 1.4;
+    }
+
+/* button de seleccion */
+
+.btn-select-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 23px;
+    min-height: 46px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
+    color: var(--blanco);
+    box-shadow: 0 7px 17px rgba(20, 92, 66, 0.18);
+}
+
+    .btn-select-pdf:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 9px 20px rgba(20, 92, 66, 0.24);
+        background: linear-gradient(135deg, #17694b, var(--verde-oscuro));
+    }
+
+    .btn-select-pdf:active {
+        transform: translateY(0);
+    }
+
+    .btn-select-pdf i {
+        font-size: 17px;
+    }
+
+/* file seleted */
+
+.selected-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 11px 12px 11px 16px;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: #f8faf9;
+    color: var(--texto-secundario);
+    font-size: 13px;
+    min-height: 44px;
+}
+
+.selected-file-name,
+.selected-excel-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    color: var(--texto);
+}
+
+/* btn quitar file */
+
+.btn-remove-file {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: #7a8780;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-remove-file:hover {
+        background: #fcebea;
+        color: #b42318;
+    }
+
+    .btn-remove-file i {
+        font-size: 13px;
+    }
+
+/* Btn procesing */
+
+.contract-process-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+}
+
+.btn-process-pdf {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 0 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
+    color: var(--blanco);
+    box-shadow: 0 7px 17px rgba(20, 92, 66, 0.18);
+}
+
+    .btn-process-pdf:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 9px 20px rgba(20, 92, 66, 0.24);
+    }
+
+    .btn-process-pdf:disabled {
+        background: #c9d5cf;
+        color: #ffffff;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .btn-process-pdf i {
+        font-size: 17px;
+    }
+
+/* information */
+
+.contract-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 18px auto 0;
+    color: var(--texto-secundario);
+    font-size: 12px;
+}
+
+    .contract-info i {
+        color: var(--verde-principal);
+        font-size: 15px;
+    }
+
+/* results */
+
+.finiquito-results {
+    margin-top: 2rem;
+    padding: 1.5rem 2rem;
+    background: var(--verde-claro);
+    border-radius: 12px;
+    border: 1px solid var(--borde);
+}
+
+.finiquito-results-header {
+    margin-bottom: 1.5rem;
+}
+
+    .finiquito-results-header h3 {
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+        color: var(--texto);
+    }
+
+    .finiquito-results-header p {
+        margin: 0;
+        color: var(--texto-secundario);
+    }
+
+.finiquito-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.finiquito-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: var(--blanco);
+    border-radius: 8px;
+    border: 1px solid var(--borde);
+}
+
+.finiquito-file-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.finiquito-file-icon {
+    color: #dc3545;
+    font-size: 1.5rem;
+}
+
+.finiquito-file-info div {
+    display: flex;
+    flex-direction: column;
+}
+
+.finiquito-file-info strong {
+    font-size: 0.9rem;
+    color: var(--texto);
+}
+
+.finiquito-file-info span {
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+}
+
+.finiquito-file-status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--verde-principal);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+    .finiquito-file-status i {
+        font-size: 1.1rem;
+    }
+
+/* responsive */
+
+@media (max-width: 900px) {
+    .contract-page {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .upload-files-container {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .contract-upload-card {
+        padding: 38px 20px;
+    }
+
+    .contract-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .contract-header-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 23px;
+    }
+
+    .contract-header h2 {
+        font-size: 22px;
+    }
+
+    .contract-header p {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .upload-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 28px;
+    }
+
+    .btn-select-pdf {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+    }
+
+    .btn-process-pdf {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .contract-info {
+        align-items: flex-start;
+        text-align: left;
+        line-height: 1.5;
+    }
+
+    .finiquito-file-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-select-pdf {
+        padding: 0 16px;
+        font-size: 13px;
+        min-height: 42px;
+    }
+
+    .upload-item h3 {
+        font-size: 0.95rem;
+    }
+
+    .contract-upload-card {
+        padding: 28px 16px;
+    }
+
+    .selected-file {
+        font-size: 12px;
+        padding: 9px 10px 9px 14px;
+    }
+   
+    /*prueba de css*/
+    #principal {
+        background-image: url('/Images/stg.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 800px; /* Mejor que height fijo */
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
+    /* Bloque de css para image */
+    
+    
 }

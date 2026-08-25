@@ -1,497 +1,451 @@
 ﻿@{
     ViewData["Title"] = "Contratos";
-
-    var archivosGenerados =
-        ViewBag.ArchivosGenerados as List<string>;
+    var archivosGenerados = ViewBag.ArchivosGenerados as List<string>;
+    var carpetaContratos = ViewBag.CarpetaContratos as string;
 }
 
 
+<!--Alert of Errors -->
 @if (ViewBag.MensajeExito != null)
 {
-    <div class="alert alert-success">
+    <div id="alertExito" class="alert alert-success alert-dismissible fade show">
         <i class="bi bi-check-circle-fill me-2"></i>
         @ViewBag.MensajeExito
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
-
 
 @if (ViewBag.Error != null)
 {
-    <div class="alert alert-danger">
+    <div id="alertError" class="alert alert-danger alert-dismissible fade show">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
-
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">
+    <div id="alertTempError" class="alert alert-danger alert-dismissible fade show">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
+<!--Principal Div -->
+<div class="contract">
 
-
-<div class="contract-page">
-
-    <!-- ========================= -->
-    <!-- ENCABEZADO -->
-    <!-- ========================= -->
-
+   
+    <!--header -->
     <div class="contract-header">
-
         <div class="contract-header-icon">
             <i class="bi bi-file-earmark-text-fill"></i>
         </div>
-
         <div>
-
-            <h2>
-                Gestión de contratos
-            </h2>
-
+            <h2>Gestión de contratos</h2>
             <p>
                 Carga el archivo PDF generado por el escáner
-                para separar los contratos individuales.
+                y el Excel que contiene los códigos de los empleados.
             </p>
-
         </div>
-
     </div>
-
-
-    <!-- ========================= -->
-    <!-- FORMULARIO -->
-    <!-- ========================= -->
-
+        <!-- Form -->
     <form asp-controller="Contrato"
           asp-action="Procesar"
           method="post"
           enctype="multipart/form-data"
           id="formContrato">
 
-        <div class="contract-upload-card">
+        <div class="contract-upload-card mt-5">
 
+           <!--Container PDF end EXEL-->
+            <div class="upload-files-container">
 
-            <div class="upload-icon">
+               
+                <!--PDF-->
+               
+                <div class="upload-item">
+                   
+                   
+                   
+                    <h3>Subir archivo PDF</h3>
+                    <p>
+                        Selecciona el archivo PDF que contiene
+                        los contratos escaneados.
+                    </p>
 
-                <i class="bi bi-cloud-arrow-up"></i>
+                    <input type="file"
+                           id="pdfContrato"
+                           name="pdfContrato"
+                           accept=".pdf,application/pdf"
+                           hidden />
+
+                    <button type="button"
+                            class="btn-select-pdf"
+                            onclick="document.getElementById('pdfContrato').click()">
+                        <i class="bi bi-folder2-open"></i>
+                        Seleccionar PDF
+                    </button>
+
+                    <!--Selected PDF-->
+                    <div id="archivoSeleccionado" class="selected-file">
+                        <span class="selected-file-name">
+                            Ningún archivo seleccionado
+                        </span>
+                        <button type="button"
+                                id="btnQuitarArchivo"
+                                class="btn-remove-file"
+                                title="Quitar archivo"
+                                style="display: none;">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                
+                <!--EXEL-->
+                <div class="upload-item">
+                    <h3>Subir archivo Excel</h3>
+                    <p>
+                        Selecciona el Excel que contiene los códigos
+                        correspondientes a cada contrato.
+                    </p>
+
+                    <input type="file"
+                           id="archivoExcel"
+                           name="archivoExcel"
+                           accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                           hidden />
+
+                    <button type="button"
+                            class="btn-select-pdf"
+                            onclick="document.getElementById('archivoExcel').click()">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        Seleccionar Excel
+                    </button>
+
+                    <!--Selected EXEL-->
+                    <div id="excelSeleccionado" class="selected-file">
+                        <span class="selected-excel-name">
+                            Ningún archivo Excel seleccionado
+                        </span>
+                        <button type="button"
+                                id="btnQuitarExcel"
+                                class="btn-remove-file"
+                                title="Quitar archivo"
+                                style="display: none;">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
 
             </div>
 
-
-            <h3>
-                Subir archivo PDF
-            </h3>
-
-
-            <p>
-                Selecciona el archivo PDF que contiene
-                los contratos escaneados.
-            </p>
-
-
-            <!-- PDF -->
-
-            <input type="file"
-                   id="pdfContrato"
-                   name="pdfContrato"
-                   accept=".pdf,application/pdf"
-                   hidden />
-
-
-            <!-- SELECCIONAR PDF -->
-
-            <button type="button"
-                    class="btn-select-pdf"
-                    onclick="document.getElementById('pdfContrato').click()">
-
-                <i class="bi bi-folder2-open"></i>
-
-                Seleccionar PDF
-
-            </button>
-
-
-            <!-- ARCHIVO SELECCIONADO -->
-
-            <div id="archivoSeleccionado"
-                 class="selected-file">
-
-                <span class="selected-file-name">
-
-                    Ningún archivo seleccionado
-
-                </span>
-
-
-                <button type="button"
-                        id="btnQuitarArchivo"
-                        class="btn-remove-file"
-                        title="Quitar archivo"
-                        style="display: none;">
-
-                    <i class="bi bi-x-lg"></i>
-
-                </button>
-
+            <!-- Select folder -->
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="form-group text-start">
+                        <label class="fw-bold">
+                            <i class="bi bi-folder"></i> Carpeta de destino
+                        </label>
+                        <input type="text"
+                               id="carpetaDestino"
+                               name="carpetaDestino"
+                               class="form-control"
+                               placeholder="Ej: C:\Users\...\Contratos"
+                               value="@ViewBag.CarpetaDestino" />
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i>
+                            Escribe o pega la ruta de la carpeta donde quieres guardar los contratos.
+                            La ruta se guarda automáticamente para futuras sesiones.
+                        </small>
+                    </div>
+                </div>
             </div>
+            
+            <!-- Select folder END -->
+         
 
-
-            <!-- PROCESAR -->
+           
+            <!--Procesing-->
+           
 
             <div class="contract-process-actions">
-
                 <button type="submit"
                         id="btnProcesarContrato"
                         class="btn-process-pdf"
                         disabled>
-
                     <i class="bi bi-scissors"></i>
-
                     Procesar contratos
-
                 </button>
-
             </div>
 
-
-            <!-- INFORMACIÓN -->
+            
+            <!--Information-->
+           
 
             <div class="contract-info">
-
                 <i class="bi bi-info-circle"></i>
-
                 <span>
-                    Cada página del archivo será generada
-                    como un contrato PDF individual.
+                    Cada página del PDF será generada como un
+                    contrato individual y se asociará con el
+                    código correspondiente del archivo Excel.
                 </span>
-
             </div>
-
 
         </div>
 
     </form>
 
-
-    <!-- ========================= -->
-    <!-- RESULTADOS -->
-    <!-- ========================= -->
-    @if (archivosGenerados != null &&
-             archivosGenerados.Count > 0)
-    {
-        <div class="finiquito-results">
-
-            <div class="finiquito-results-header">
-
-                <div>
-
-                    <h3>
-
-                        <i class="bi bi-check-circle-fill"></i>
-
-                        Contratos generados
-
-                    </h3>
-
-
-                    <p>
-                        Se generaron
-                        <strong>@archivosGenerados.Count</strong>
-                        archivos PDF correctamente.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="finiquito-file-list">
-
-                @foreach (var archivo in archivosGenerados)
-                {
-                    <div class="finiquito-file-item">
-
-                        <div class="finiquito-file-info">
-
-                            <div class="finiquito-file-icon">
-
-                                <i class="bi bi-file-earmark-pdf"></i>
-
-                            </div>
-
-
-                            <div>
-
-                                <strong>
-                                    @archivo
-                                </strong>
-
-                                <span>
-                                    Documento PDF generado
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="finiquito-file-status">
-
-                            <i class="bi bi-check-circle-fill"></i>
-
-                            Listo
-
-                        </div>
-
-                    </div>
-                }
-
-            </div>
-
-        </div>
-    }
+    
+  
+   
 
 </div>
 
-
+<!--Section Scripts-->  
 @section Scripts
 {
     <script>
 
-        // =========================================
-        // ELEMENTOS
-        // =========================================
+        // Element PDF
+        
 
-        const pdfInput =
-            document.getElementById(
-                "pdfContrato"
-            );
+        const pdfInput = document.getElementById("pdfContrato");
+        const archivoSeleccionado = document.getElementById("archivoSeleccionado");
+        const nombreArchivo = archivoSeleccionado.querySelector(".selected-file-name");
+        const btnQuitarArchivo = document.getElementById("btnQuitarArchivo");
 
-        const archivoSeleccionado =
-            document.getElementById(
-                "archivoSeleccionado"
-            );
+        
+        // Element EXCEL
+       
 
-        const nombreArchivo =
-            archivoSeleccionado.querySelector(
-                ".selected-file-name"
-            );
+        const excelInput = document.getElementById("archivoExcel");
+        const excelSeleccionado = document.getElementById("excelSeleccionado");
+        const nombreExcel = excelSeleccionado.querySelector(".selected-excel-name");
+        const btnQuitarExcel = document.getElementById("btnQuitarExcel");
 
-        const btnQuitarArchivo =
-            document.getElementById(
-                "btnQuitarArchivo"
-            );
+       
+        // Element Global
+        
 
-        const btnProcesarContrato =
-            document.getElementById(
-                "btnProcesarContrato"
-            );
+        const btnProcesarContrato = document.getElementById("btnProcesarContrato");
+        const formContrato = document.getElementById("formContrato");
 
-        const formContrato =
-            document.getElementById(
-                "formContrato"
-            );
+       
+        // Select PDF
+      
 
-
-        // =========================================
-        // SELECCIONAR PDF
-        // =========================================
-
-        pdfInput.addEventListener(
-            "change",
-            function () {
-
-                if (this.files.length === 0) {
-
-                    limpiarArchivo();
-
-                    return;
-                }
-
-                const archivo =
-                    this.files[0];
-
-                const esPdf =
-                    archivo.type === "application/pdf"
-                    ||
-                    archivo.name
-                        .toLowerCase()
-                        .endsWith(".pdf");
-
-                if (!esPdf) {
-
-                    alert(
-                        "Por favor selecciona un archivo PDF."
-                    );
-
-                    limpiarArchivo();
-
-                    return;
-                }
-
-                nombreArchivo.textContent =
-                    archivo.name;
-
-                btnQuitarArchivo.style.display =
-                    "flex";
-
-                btnProcesarContrato.disabled =
-                    false;
-
-            }
-        );
-
-
-        // =========================================
-        // QUITAR ARCHIVO
-        // =========================================
-
-        btnQuitarArchivo.addEventListener(
-            "click",
-            function () {
-
+        pdfInput.addEventListener("change", function() {
+            if (this.files.length === 0) {
                 limpiarArchivo();
-
+                return;
             }
-        );
 
+            const archivo = this.files[0];
+            const esPdf = archivo.type === "application/pdf" ||
+                archivo.name.toLowerCase().endsWith(".pdf");
 
-        // =========================================
-        // PROCESAR
-        // =========================================
+            if (!esPdf) {
+                alert("Por favor selecciona un archivo PDF.");
+                limpiarArchivo();
+                return;
+            }
 
-        formContrato.addEventListener(
-            "submit",
-            function () {
+            nombreArchivo.textContent = archivo.name;
+            btnQuitarArchivo.style.display = "flex";
+            actualizarEstadoBoton();
+        });
 
-                if (pdfInput.files.length === 0) {
+        
+        // Select EXCEL
+       
 
-                    alert(
-                        "Debes seleccionar un archivo PDF."
-                    );
+        excelInput.addEventListener("change", function() {
+            if (this.files.length === 0) {
+                limpiarExcel();
+                return;
+            }
 
-                    return false;
-                }
+            const archivo = this.files[0];
+            const esExcel = archivo.name.toLowerCase().endsWith(".xlsx");
 
-                btnProcesarContrato.disabled =
-                    true;
+            if (!esExcel) {
+                alert("Por favor selecciona un archivo Excel .xlsx.");
+                limpiarExcel();
+                return;
+            }
 
-                btnProcesarContrato.innerHTML =
-                    `
-                        <span
-                            class="spinner-border spinner-border-sm"
-                            aria-hidden="true">
-                        </span>
+            nombreExcel.textContent = archivo.name;
+            btnQuitarExcel.style.display = "flex";
+            actualizarEstadoBoton();
+        });
 
+       
+        // Remove PDF
+        
+
+        btnQuitarArchivo.addEventListener("click", function() {
+            limpiarArchivo();
+        });
+
+        
+        // Remove EXCEL
+     
+
+        btnQuitarExcel.addEventListener("click", function() {
+            limpiarExcel();
+        });
+
+      
+        // Update Button PROCESAR
+    
+
+        function actualizarEstadoBoton() {
+            const pdfSeleccionado = pdfInput.files.length > 0;
+            const excelSeleccionado = excelInput.files.length > 0;
+            btnProcesarContrato.disabled = !(pdfSeleccionado && excelSeleccionado);
+        }
+
+        
+            // Processing
+       
+
+        formContrato.addEventListener("submit", function(event) {
+            if (pdfInput.files.length === 0) {
+                event.preventDefault();
+                alert("Debes seleccionar un archivo PDF.");
+                return;
+            }
+
+            if (excelInput.files.length === 0) {
+                event.preventDefault();
+                alert("Debes seleccionar un archivo Excel con los códigos.");
+                return;
+            }
+
+            btnProcesarContrato.disabled = true;
+            btnProcesarContrato.innerHTML = `
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                         Procesando...
                     `;
+        });
 
-            }
-        );
-
-
-        // =========================================
-        // LIMPIAR
-        // =========================================
+      
+        // Clear PDF
+       
 
         function limpiarArchivo() {
-
-            pdfInput.value =
-                "";
-
-            nombreArchivo.textContent =
-                "Ningún archivo seleccionado";
-
-            btnQuitarArchivo.style.display =
-                "none";
-
-            btnProcesarContrato.disabled =
-                true;
-
-            btnProcesarContrato.innerHTML =
-                `
-                    <i class="bi bi-scissors"></i>
-
-                    Procesar contratos
-                `;
-
+            pdfInput.value = "";
+            nombreArchivo.textContent = "Ningún archivo seleccionado";
+            btnQuitarArchivo.style.display = "none";
+            actualizarEstadoBoton();
+            restaurarBoton();
         }
 
+        // Clear EXCEL
+      
 
-        // =========================================
-        // DESCARGA AUTOMÁTICA
-        // =========================================
+        function limpiarExcel() {
+            excelInput.value = "";
+            nombreExcel.textContent = "Ningún archivo Excel seleccionado";
+            btnQuitarExcel.style.display = "none";
+            actualizarEstadoBoton();
+            restaurarBoton();
+        }
 
-        @if (archivosGenerados != null &&
-                  archivosGenerados.Count > 0)
-        {
-                <text>
+        // Restore BOTÓN
 
-                        const archivosParaDescargar =
-                            @Html.Raw(
-                                    System.Text.Json.JsonSerializer.Serialize(
-                                            archivosGenerados
-                                    )
-                            );
+        function restaurarBoton() {
+            btnProcesarContrato.innerHTML = `
+                        <i class="bi bi-scissors"></i>
+                        Procesar contratos
+                    `;
+        }
 
-                        const urlDescarga =
-                            '@Url.Action("Descargar", "Contrato")';
+        //Open file on ONEDRIVE
 
+        function abrirCarpeta(ruta) {
+            try {
+                const url = 'file:///' + ruta.replace(/\\/g, '/');
+                window.open(url, '_blank');
+            } catch (e) {
+                alert('Abre esta carpeta manualmente:\n' + ruta);
+            }
+        }
 
-                        window.addEventListener(
-                            "load",
-                            function () {
+        // Copy url  
 
-                                archivosParaDescargar.forEach(
-                                    function (archivo, indice) {
+        
 
-                                        setTimeout(
-                                            function () {
+       
+        // Fallback for copy url
+      
 
-                                                const enlace =
-                                                    document.createElement(
-                                                        "a"
-                                                    );
+        function fallbackCopiarRuta(ruta) {
+            const input = document.createElement('input');
+            input.value = ruta;
+            document.body.appendChild(input);
+            input.select();
+            try {
+                document.execCommand('copy');
+                mostrarToast('Ruta copiada al portapapeles');
+            } catch (e) {
+                alert('Copia manualmente esta ruta:\n' + ruta);
+            }
+            document.body.removeChild(input);
+        }
 
-                                                enlace.href =
-                                                    urlDescarga
-                                                    +
-                                                    "?nombreArchivo="
-                                                    +
-                                                    encodeURIComponent(
-                                                        archivo
-                                                    );
+       
+        // See TOAST
+        
 
-                                                enlace.download =
-                                                    archivo;
+        function mostrarToast(mensaje) {
+            const toast = document.createElement('div');
+            toast.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+            toast.style.zIndex = '9999';
+            toast.style.maxWidth = '400px';
+            toast.innerHTML = mensaje;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+     
+        // Auto occult 5 seconds
+        
 
-                                                enlace.style.display =
-                                                    "none";
+        document.addEventListener('DOMContentLoaded', function() {
 
-                                                document.body.appendChild(
-                                                    enlace
-                                                );
+            // Buscar todas las alertas
+            const alertas = document.querySelectorAll('.alert');
 
-                                                enlace.click();
+            alertas.forEach(function(alerta) {
+                // Solo aplicar a alertas de éxito o error
+                if (alerta.classList.contains('alert-success') ||
+                    alerta.classList.contains('alert-danger')) {
 
-                                                enlace.remove();
+                    //time in secunds
+                    const tiempoVisualizacion = 5000; // 5000ms = 5 segundos
 
-                                            },
+                    // Ocultar después del tiempo configurado
+                    setTimeout(function() {
+                        // Quitar clase 'show' para iniciar fade out
+                        alerta.classList.remove('show');
+                        alerta.classList.add('fade');
 
-                                            indice * 700
-                                        );
-
-                                    }
-                                );
-
+                        // Eliminar del DOM después de la animación
+                        setTimeout(function() {
+                            if (alerta.parentNode) {
+                                alerta.remove();
                             }
-                        );
+                        }, 300);
 
-                </text>
-        }
+                    }, tiempoVisualizacion);
+                }
+            });
+
+        });
 
     </script>
 }

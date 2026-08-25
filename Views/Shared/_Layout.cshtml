@@ -29,7 +29,7 @@
         <div class="brand">
 
             <div class="brand-icon">
-                <i class="bi bi-people-fill"></i>
+                <img src="/Images/logo.png" alt="Personas y Cultura" width="43" height="43">
             </div>
 
             <div>
@@ -77,20 +77,29 @@
                    <span>Finiquitos</span>
 
                </a>
-
                <a asp-controller="Incapacidad"
                   asp-action="Index"
                   class="menu-item @(Context.Request.Path.StartsWithSegments("/Incapacidad") ? "active" : "")">
 
-                    <i class="bi bi-file-earmark-medical"></i>
-                    <span>Incapacidades</span>
+                   <i class="bi bi-file-earmark-check"></i>
+                   <span>Incapacidades</span>
 
-              </a>
+               </a>
+               <a asp-controller="IncapacidadRevision"
+               asp-action="Index"
+               class="menu-item @(Context.Request.Path.StartsWithSegments("/IncapacidadRevision") ? "active" : "")">
+
+                <i class="bi bi-pencil-square"></i>
+                <span>Revisar incapacidades</span>
+
+            </a>
+
+               
 
             </nav>
 
 
-            <div class="sidebar-bottom">
+            <!--<div class="sidebar-bottom">
 
                 <a href="#"
                    class="menu-item">
@@ -100,7 +109,7 @@
 
                 </a>
 
-            </div>
+            </div> -->
 
         </aside>
 

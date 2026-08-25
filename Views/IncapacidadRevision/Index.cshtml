@@ -1,0 +1,498 @@
+﻿@{
+    ViewData["Title"] = "Revisión de Incapacidades";
+
+    var todosLosArchivos = ViewBag.TodosLosArchivos as List<(string Nombre, string Carpeta)>
+        ?? new List<(string, string)>();
+
+    var nombreActual = ViewBag.NombreActual as string;
+    var carpetaOrigen = ViewBag.CarpetaOrigen as string;
+    var carpetaDestino = ViewBag.CarpetaDestino as string;
+}
+
+<!-- alerts  -->
+
+@if (ViewBag.MensajeExito != null)
+{
+    <div id="alertExito"
+         class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @ViewBag.MensajeExito
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+    </div>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div id="alertError"
+         class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @ViewBag.Error
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+    </div>
+}
+
+
+<div class="contract">
+
+    <!-- header -->
+
+    <div class="contract-header mb-3">
+
+        <div class="contract-header-icon">
+            <i class="bi bi-pencil-square"></i>
+        </div>
+
+        <div>
+            <h2>Revisión y renombrado de incapacidades</h2>
+
+            <p class="mb-1">
+                Selecciona un archivo, visualízalo y asígnale
+                un nombre personalizado.
+            </p>
+
+           
+        </div>
+
+    </div>
+
+
+    <!-- top bar -->
+
+    @if (!string.IsNullOrEmpty(nombreActual))
+    {
+        <div class="card mb-3">
+
+            <div class="card-body py-3">
+
+                <form asp-action="Guardar"
+                      method="post">
+
+                    <!-- DATOS OCULTOS -->
+
+                    <input type="hidden"
+                           name="nombreOriginal"
+                           value="@nombreActual" />
+
+                    <input type="hidden"
+                           name="carpetaOrigen"
+                           value="@carpetaOrigen" />
+
+
+                    <div class="row g-3 align-items-end">
+
+                        <!-- NUEVO NOMBRE -->
+
+                        <div class="col-md-4">
+
+                            <label for="nuevoNombre"
+                                   class="form-label fw-bold mb-1">
+
+                                <i class="bi bi-pencil me-1"></i>
+                                Nuevo nombre
+
+                            </label>
+
+                            <div class="input-group">
+
+                                <input type="text"
+                                       id="nuevoNombre"
+                                       name="nuevoNombre"
+                                       class="form-control"
+                                       placeholder="Ej: Juan_Perez_Incapacidad_2026"
+                                       value="@ViewBag.NuevoNombre"
+                                       required />
+
+                                <span class="input-group-text">
+                                    .pdf
+                                </span>
+
+                            </div>
+
+                            
+
+                        </div>
+
+
+                        <!-- url destination -->
+
+                        <div class="col-md-6">
+
+                            <label for="carpetaDestino"
+                                   class="form-label fw-bold mb-1">
+
+                                <i class="bi bi-folder me-1"></i>
+                                Ruta para guardar
+
+                            </label>
+
+                            <input type="text"
+                                   id="carpetaDestino"
+                                   name="carpetaDestino"
+                                   class="form-control"
+                                   placeholder="Ruta donde se guardarán los archivos renombrados"
+                                   value="@carpetaDestino" />
+
+                           
+
+                        </div>
+
+
+                        <!-- Button save -->
+
+                        <div class="col-md-2">
+
+                            <button type="submit"
+                                    class="btn btn-success w-100">
+
+                                <i class="bi bi-check-circle me-1"></i>
+                                Guardar
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- content principal -->
+
+    <div class="row g-3">
+
+
+        <!-- column left -->
+
+        <div class="col-md-3">
+
+            <div class="card h-100">
+
+                <!-- Header  -->
+
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+
+                    <span>
+                        <i class="bi bi-list-ul me-1"></i>
+                        Archivos pendientes
+                    </span>
+
+                    <span class="badge bg-secondary">
+                        @todosLosArchivos.Count
+                    </span>
+
+                </div>
+
+
+                <!-- list -->
+
+                <div class="card-body p-0"
+                     style="height: 72vh; overflow-y: auto;">
+
+                    @if (todosLosArchivos.Count == 0)
+                    {
+                        <div class="text-center py-5 px-3">
+
+                            <i class="bi bi-inbox"
+                               style="font-size: 2.5rem; color: #c0c0c0;">
+                            </i>
+
+                            <p class="text-muted mt-3">
+                                No hay archivos pendientes
+                                en ninguna carpeta.
+                            </p>
+
+                            
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+
+                            @foreach (var item in todosLosArchivos)
+                            {
+                                var isActive =
+                                    item.Nombre == nombreActual &&
+                                    item.Carpeta == carpetaOrigen;
+
+                                <a asp-action="Index"
+                                   asp-route-nombreArchivo="@item.Nombre"
+                                   asp-route-carpetaOrigen="@item.Carpeta"
+                                   class="list-group-item list-group-item-action @(isActive ? "active" : "")">
+
+                                    <div class="d-flex justify-content-between align-items-center">
+
+                                        <div class="text-truncate"
+                                             style="min-width: 0;">
+
+                                            <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+
+                                            <span title="@item.Nombre">
+                                                @item.Nombre
+                                            </span>
+
+                                        </div>
+
+                                        @if (isActive)
+                                        {
+                                            <i class="bi bi-check-circle-fill text-white ms-2"></i>
+                                        }
+
+                                    </div>
+
+
+                                    <small class="d-block mt-1
+                                                  @(isActive ? "text-white-50" : "text-muted")"
+                                           style="font-size: 0.7rem;">
+
+                                        <i class="bi bi-folder me-1"></i>
+
+                                        @item.Carpeta
+
+                                    </small>
+
+                                </a>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- actions -->
+
+            @if (todosLosArchivos.Count > 0 &&
+                 !string.IsNullOrEmpty(nombreActual))
+            {
+                <div class="mt-3">
+
+                    <form asp-action="Eliminar"
+                          asp-route-nombreArchivo="@nombreActual"
+                          asp-route-carpetaOrigen="@carpetaOrigen"
+                          method="post"
+                          onsubmit="return confirm('¿Eliminar este archivo?');">
+
+                        <button type="submit"
+                                class="btn btn-outline-danger btn-sm w-100">
+
+                            <i class="bi bi-trash me-1"></i>
+                            Eliminar archivo
+
+                        </button>
+
+                    </form>
+
+                </div>
+            }
+
+
+            <!-- clear history -->
+
+            <div class="mt-2">
+
+                <form asp-action="LimpiarHistorial"
+                      method="post"
+                      onsubmit="return confirm('¿Limpiar el historial de carpetas? Esto no eliminará archivos, solo la lista de carpetas revisadas.');">
+
+                    <button type="submit"
+                            class="btn btn-outline-secondary btn-sm w-100">
+
+                        <i class="bi bi-eraser me-1"></i>
+                        Limpiar historial
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- Column right  -->
+        <!-- VISOR PDF -->
+
+        <div class="col-md-9">
+
+            @if (string.IsNullOrEmpty(nombreActual))
+            {
+                <!-- file not selected -->
+
+                <div class="card"
+                     style="height: 72vh;">
+
+                    <div class="card-body
+                                d-flex
+                                flex-column
+                                justify-content-center
+                                align-items-center
+                                text-center">
+
+                        <i class="bi bi-eye-slash"
+                           style="font-size: 4rem; color: #c0c0c0;">
+                        </i>
+
+                        <h5 class="mt-3 text-muted">
+                            Selecciona un archivo para revisar
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Haz clic en un archivo de la lista
+                            de la izquierda.
+                        </p>
+
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <!-- Visor pdf  -->
+
+                <div class="card"
+                     style="height: 72vh;">
+
+                    <!-- headers view -->
+
+                    <div class="card-header bg-light
+                                d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div class="text-truncate">
+
+                            <i class="bi bi-file-earmark-medical
+                                      me-1">
+                            </i>
+
+                            Revisando:
+
+                            <strong>
+                                @nombreActual
+                            </strong>
+
+                        </div>
+
+
+                        <span class="badge bg-secondary ms-2">
+
+                            <i class="bi bi-folder me-1"></i>
+
+                            @carpetaOrigen
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- PDF -->
+
+                    <div class="card-body p-0"
+                         style="height: calc(72vh - 57px);">
+
+                        <iframe src="@Url.Action(
+                                        "VerPdf",
+                                        new
+                                        {
+                                            nombreArchivo = nombreActual,
+                                            carpetaOrigen = carpetaOrigen
+                                        })"
+                                style="width:100%;
+                                       height:100%;
+                                       border:none;"
+                                frameborder="0">
+
+                            Tu navegador no soporta
+                            la visualización de PDF.
+
+                        </iframe>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- Scripts -->
+
+@section Scripts
+{
+    <script>
+
+        // auto alerts 
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const alertas =
+                document.querySelectorAll('.alert');
+
+            alertas.forEach(function (alerta) {
+
+                if (
+                    alerta.classList.contains('alert-success') ||
+                    alerta.classList.contains('alert-danger')
+                ) {
+
+                    setTimeout(function () {
+
+                        alerta.classList.remove('show');
+                        alerta.classList.add('fade');
+
+                        setTimeout(function () {
+
+                            if (alerta.parentNode) {
+                                alerta.remove();
+                            }
+
+                        }, 300);
+
+                    }, 5000);
+
+                }
+
+            });
+
+        });
+
+
+        // name view focus
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const input =
+                document.getElementById('nuevoNombre');
+
+            if (input) {
+
+                input.focus();
+                input.select();
+
+            }
+
+        });
+
+    </script>
+}
