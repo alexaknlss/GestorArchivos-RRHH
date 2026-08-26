@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Incapacidades";
+<<<<<<< HEAD
 
     var archivosGenerados =
         ViewBag.ArchivosGenerados as List<string>;
@@ -25,18 +26,47 @@
 
 
 <div class="contract-page">
+=======
+    var archivosGenerados = ViewBag.ArchivosGenerados as List<string>;
+    var carpetaIncapacidades = ViewBag.CarpetaIncapacidades as string;
+}
+
+<!-- Message errors -->
+@if (ViewBag.MensajeExito != null)
+{
+    <div id="alertExito" class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @ViewBag.MensajeExito
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div id="alertError" class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!--  Principal DIV -->
+
+<div class="contract">
+
+    <!-- Header -->
+>>>>>>> Diego
 
     <!-- ========================= -->
     <!-- ENCABEZADO -->
     <!-- ========================= -->
 
     <div class="contract-header">
-
         <div class="contract-header-icon">
             <i class="bi bi-file-earmark-medical-fill"></i>
         </div>
-
         <div>
+<<<<<<< HEAD
 
             <h2>
                 Gestión de incapacidades
@@ -45,12 +75,19 @@
             <p>
                 Carga el archivo PDF generado por el escáner
                 para separar las incapacidades individuales.
+=======
+            <h2>Gestión de incapacidades</h2>
+            <p>
+                Carga el archivo PDF generado por el escáner
+                y el Excel que contiene los códigos de los empleados.
+                Cada página del PDF generará una incapacidad individual.
+>>>>>>> Diego
             </p>
 
         </div>
-
     </div>
 
+<<<<<<< HEAD
 
     <!-- ========================= -->
     <!-- FORMULARIO -->
@@ -160,10 +197,141 @@
             </div>
 
 
+=======
+    <!-- Form -->
+
+    <form asp-controller="Incapacidad"
+          asp-action="Procesar"
+          method="post"
+          enctype="multipart/form-data"
+          id="formIncapacidad">
+
+        <div class="contract-upload-card mt-5">
+
+            <!--Pdf and Exel -->
+
+            <div class="upload-files-container">
+
+                <!-- Pdf -->
+                <div class="upload-item">
+                    <h3>Subir archivo PDF</h3>
+                    <p>
+                        Selecciona el archivo PDF que contiene
+                        las incapacidades escaneadas.
+                    </p>
+
+                    <input type="file"
+                           id="pdfIncapacidad"
+                           name="pdfIncapacidad"
+                           accept=".pdf,application/pdf"
+                           hidden />
+
+                    <button type="button"
+                            class="btn-select-pdf"
+                            onclick="document.getElementById('pdfIncapacidad').click()">
+                        <i class="bi bi-folder2-open"></i>
+                        Seleccionar PDF
+                    </button>
+
+                    <div id="archivoSeleccionadoIncapacidad" class="selected-file">
+                        <span class="selected-file-name">Ningún archivo seleccionado</span>
+                        <button type="button"
+                                id="btnQuitarIncapacidad"
+                                class="btn-remove-file"
+                                title="Quitar archivo"
+                                style="display: none;">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Exel -->
+                <div class="upload-item">
+                    <h3>Subir archivo Excel</h3>
+                    <p>
+                        Selecciona el Excel que contiene los códigos
+                        correspondientes a cada incapacidad.
+                    </p>
+
+                    <input type="file"
+                           id="archivoExcel"
+                           name="archivoExcel"
+                           accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                           hidden />
+
+                    <button type="button"
+                            class="btn-select-pdf"
+                            onclick="document.getElementById('archivoExcel').click()">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        Seleccionar Excel
+                    </button>
+
+                    <div id="excelSeleccionado" class="selected-file">
+                        <span class="selected-excel-name">Ningún archivo Excel seleccionado</span>
+                        <button type="button"
+                                id="btnQuitarExcel"
+                                class="btn-remove-file"
+                                title="Quitar archivo"
+                                style="display: none;">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Select folder -->
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="form-group text-start">
+                        <label class="fw-bold">
+                            <i class="bi bi-folder"></i> Carpeta de destino
+                        </label>
+                        <input type="text"
+                               id="carpetaDestino"
+                               name="carpetaDestino"
+                               class="form-control"
+                               placeholder="Ej: C:\Users\...\Incapacidades"
+                               value="@ViewBag.CarpetaDestino" />
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i>
+                            Escribe o pega la ruta de la carpeta donde quieres guardar las incapacidades.
+                            La ruta se guarda automáticamente para futuras sesiones.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <!-- Select folder End -->
+
+            <!-- Process -->
+
+            <div class="contract-process-actions">
+                <button type="submit"
+                        id="btnProcesarIncapacidad"
+                        class="btn-process-pdf"
+                        disabled>
+                    <i class="bi bi-scissors"></i>
+                    Procesar incapacidades
+                </button>
+            </div>
+
+            <!-- Info -->
+
+            <div class="contract-info">
+                <i class="bi bi-info-circle"></i>
+                <span>
+                    Cada página del PDF será generada como una
+                    incapacidad individual y se asociará con el
+                    código correspondiente del archivo Excel.
+                </span>
+            </div>
+
+>>>>>>> Diego
         </div>
 
     </form>
 
+<<<<<<< HEAD
 
     <!-- ========================= -->
     <!-- RESULTADOS -->
@@ -460,6 +628,222 @@
                         );
 
                 </text>
+=======
+   
+    
+
+</div>
+
+<!-- Scripts -->
+@section Scripts
+{
+    <script>
+        // Five secunds to hide the alert messages
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertas = document.querySelectorAll('.alert');
+
+            alertas.forEach(function(alerta) {
+                if (alerta.classList.contains('alert-success') ||
+                    alerta.classList.contains('alert-danger')) {
+
+                    const tiempoVisualizacion = 5000;
+
+                    setTimeout(function() {
+                        alerta.classList.remove('show');
+                        alerta.classList.add('fade');
+
+                        setTimeout(function() {
+                            if (alerta.parentNode) {
+                                alerta.remove();
+                            }
+                        }, 300);
+                    }, tiempoVisualizacion);
+                }
+            });
+        });
+
+        // Elements
+
+        const pdfInput = document.getElementById("pdfIncapacidad");
+        const archivoSeleccionado = document.getElementById("archivoSeleccionadoIncapacidad");
+        const nombreArchivo = archivoSeleccionado.querySelector(".selected-file-name");
+        const btnQuitar = document.getElementById("btnQuitarIncapacidad");
+
+        const excelInput = document.getElementById("archivoExcel");
+        const excelSeleccionado = document.getElementById("excelSeleccionado");
+        const nombreExcel = excelSeleccionado.querySelector(".selected-excel-name");
+        const btnQuitarExcel = document.getElementById("btnQuitarExcel");
+
+        const btnProcesar = document.getElementById("btnProcesarIncapacidad");
+        const formIncapacidad = document.getElementById("formIncapacidad");
+
+        // Selected PDF
+
+        pdfInput.addEventListener("change", function() {
+            if (this.files.length === 0) {
+                limpiarArchivo();
+                return;
+            }
+
+            const archivo = this.files[0];
+            const esPdf = archivo.type === "application/pdf" ||
+                archivo.name.toLowerCase().endsWith(".pdf");
+
+            if (!esPdf) {
+                alert("Por favor selecciona un archivo PDF.");
+                limpiarArchivo();
+                return;
+            }
+
+            nombreArchivo.textContent = archivo.name;
+            btnQuitar.style.display = "flex";
+            actualizarEstadoBoton();
+        });
+
+        // Selected  Exel
+
+        excelInput.addEventListener("change", function() {
+            if (this.files.length === 0) {
+                limpiarExcel();
+                return;
+            }
+
+            const archivo = this.files[0];
+            const esExcel = archivo.name.toLowerCase().endsWith(".xlsx");
+
+            if (!esExcel) {
+                alert("Por favor selecciona un archivo Excel .xlsx.");
+                limpiarExcel();
+                return;
+            }
+
+            nombreExcel.textContent = archivo.name;
+            btnQuitarExcel.style.display = "flex";
+            actualizarEstadoBoton();
+        });
+
+        // Remove Files
+
+        btnQuitar.addEventListener("click", function() {
+            limpiarArchivo();
+        });
+
+        btnQuitarExcel.addEventListener("click", function() {
+            limpiarExcel();
+        });
+
+        // Update Button State
+
+        function actualizarEstadoBoton() {
+            const pdfSeleccionado = pdfInput.files.length > 0;
+            const excelSeleccionado = excelInput.files.length > 0;
+            btnProcesar.disabled = !(pdfSeleccionado && excelSeleccionado);
+        }
+
+        // Procesing
+
+        formIncapacidad.addEventListener("submit", function(event) {
+            if (pdfInput.files.length === 0) {
+                event.preventDefault();
+                alert("Debes seleccionar un archivo PDF.");
+                return;
+            }
+
+            if (excelInput.files.length === 0) {
+                event.preventDefault();
+                alert("Debes seleccionar un archivo Excel con los códigos.");
+                return;
+            }
+
+            btnProcesar.disabled = true;
+            btnProcesar.innerHTML = `
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        Procesando...
+                    `;
+        });
+
+        // Clear PDF
+
+        function limpiarArchivo() {
+            pdfInput.value = "";
+            nombreArchivo.textContent = "Ningún archivo seleccionado";
+            btnQuitar.style.display = "none";
+            actualizarEstadoBoton();
+            restaurarBoton();
+        }
+
+        // Clear Exel
+
+        function limpiarExcel() {
+            excelInput.value = "";
+            nombreExcel.textContent = "Ningún archivo Excel seleccionado";
+            btnQuitarExcel.style.display = "none";
+            actualizarEstadoBoton();
+            restaurarBoton();
+        }
+
+        // Restore Button
+
+        function restaurarBoton() {
+            btnProcesar.innerHTML = `
+                        <i class="bi bi-scissors"></i>
+                        Procesar incapacidades
+                    `;
+        }
+
+        // Open Folder
+
+        function abrirCarpeta(ruta) {
+            try {
+                const url = 'file:///' + ruta.replace(/\\/g, '/');
+                window.open(url, '_blank');
+            } catch (e) {
+                alert('Abre esta carpeta manualmente:\n' + ruta);
+            }
+        }
+
+        // Copy url
+
+        function copiarRuta(ruta) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ruta)
+                    .then(() => {
+                        mostrarToast(' Ruta copiada al portapapeles');
+                    })
+                    .catch(() => {
+                        fallbackCopiarRuta(ruta);
+                    });
+            } else {
+                fallbackCopiarRuta(ruta);
+            }
+        }
+
+        function fallbackCopiarRuta(ruta) {
+            const input = document.createElement('input');
+            input.value = ruta;
+            document.body.appendChild(input);
+            input.select();
+            try {
+                document.execCommand('copy');
+                mostrarToast(' Ruta copiada al portapapeles');
+            } catch (e) {
+                alert('Copia manualmente esta ruta:\n' + ruta);
+            }
+            document.body.removeChild(input);
+        }
+
+        function mostrarToast(mensaje) {
+            const toast = document.createElement('div');
+            toast.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+            toast.style.zIndex = '9999';
+            toast.style.maxWidth = '400px';
+            toast.innerHTML = mensaje;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+>>>>>>> Diego
         }
 
     </script>

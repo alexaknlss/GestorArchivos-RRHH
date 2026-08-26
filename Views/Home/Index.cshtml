@@ -1,266 +1,107 @@
 ﻿@{
-    ViewData["Title"] = "Configuración";
+    ViewData["Title"] = "Personas y Cultura";
 }
 
-
-<div class="configuration-card">
-
-
-    
-    
-    
-        
-    
-
-
-
-    <div class="folder-list">
-
-
-        <!-- CARPETA DE ESCANEO -->
-
-        <div class="folder-card">
-
-            <div class="folder-icon">
-                <i class="bi bi-printer"></i>
-            </div>
-
-
-            <div class="folder-info">
-
-                <h3>1. Carpeta de escaneo</h3>
-
-                <p>
-                    Selecciona la carpeta donde se
-                    escanearán los archivos.
-                </p>
-
-            </div>
-
-
-            <div class="folder-path">
-
-                <input type="text"
-                       id="rutaEscaneo"
-                       placeholder="Ninguna carpeta seleccionada"
-                       readonly />
-
-            </div>
-
-
-            <button type="button"
-                    class="btn-examinar"
-                    onclick="seleccionarCarpeta('rutaEscaneo')">
-
-                <i class="bi bi-folder"></i>
-
-                Examinar
-
-            </button>
-
-        </div>
-
-
-
-        <!-- CARPETA DE GUARDADO -->
-
-        <div class="folder-card">
-
-            <div class="folder-icon">
-                <i class="bi bi-folder-fill"></i>
-            </div>
-
-
-            <div class="folder-info">
-
-                <h3>2. Carpeta de guardado</h3>
-
-                <p>
-                    Selecciona la carpeta donde se
-                    guardarán los archivos escaneados.
-                </p>
-
-            </div>
-
-
-            <div class="folder-path">
-
-                <input type="text"
-                       id="rutaGuardado"
-                       placeholder="Ninguna carpeta seleccionada"
-                       readonly />
-
-            </div>
-
-
-            <button type="button"
-                    class="btn-examinar"
-                    onclick="seleccionarCarpeta('rutaGuardado')">
-
-                <i class="bi bi-folder"></i>
-
-                Examinar
-
-            </button>
-
-        </div>
-
-
-
-        <!-- CARPETA DE INCAPACIDADES -->
-
-        <div class="folder-card">
-
-            <div class="folder-icon">
-                <i class="bi bi-file-earmark-medical-fill"></i>
-            </div>
-
-
-            <div class="folder-info">
-
-                <h3>3. Carpeta de incapacidades</h3>
-
-                <p>
-                    Selecciona la carpeta donde se
-                    escanearán las incapacidades.
-                </p>
-
-            </div>
-
-
-            <div class="folder-path">
-
-                <input type="text"
-                       id="rutaIncapacidades"
-                       placeholder="Ninguna carpeta seleccionada"
-                       readonly />
-
-            </div>
-
-
-            <button type="button"
-                    class="btn-examinar"
-                    onclick="seleccionarCarpeta('rutaIncapacidades')">
-
-                <i class="bi bi-folder"></i>
-
-                Examinar
-
-            </button>
-
-        </div>
-
-    </div>
-
-
-
-    <div class="advice-box">
-
-        <div class="advice-icon">
-            <i class="bi bi-shield-check"></i>
-        </div>
-
-
-        <div class="advice-content">
-
-            <strong>Consejo</strong>
-
-            <p>
-                Asegúrate de que las carpetas seleccionadas
-                tengan permisos de lectura y escritura para
-                un correcto funcionamiento.
+<div id="principal" class="py-1">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold" style="color: #145c42;">
+                <i class="bi bi-people-fill me-2"></i>Personas y Cultura
+            </h1>
+            <p class="lead text-muted">
+                Construyendo un entorno donde cada persona crece, colabora y transforma.
             </p>
+            <hr class="w-25 mx-auto" style="border-color: #E89F4A;">
+        </div>
 
+        <!-- Carrusel -->
+        <div id="carouselPersonasCultura"   
+             class="carousel slide carousel-fade"
+             data-bs-ride="carousel"
+             data-bs-interval="2000">
+            <!-- new in 2 seconds -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselPersonasCultura" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselPersonasCultura" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselPersonasCultura" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner rounded-4 shadow-lg">
+
+                <!-- Images 1 -->
+                <div class="carousel-item active">
+                    <img src="~/Images/puros3.jpg"
+                         class="d-block w-100"
+                         alt="Equipo colaborando"
+                         style="height: 500px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                        <h3>Colaboración</h3>
+                        <p>Trabajamos juntos para lograr grandes resultados.</p>
+                    </div>
+                </div>
+
+                <!-- Images 2 -->
+                <div class="carousel-item">
+                    <img src="~/Images/Puros2.jpeg"
+                         class="d-block w-100"
+                         alt="Diversidad e inclusión"
+                         style="height: 500px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                        <h3>Diversidad e Inclusión</h3>
+                        <p>Cada persona aporta su valor único a nuestra cultura.</p>
+                    </div>
+                </div>
+
+                <!-- Images 3 -->
+                <div class="carousel-item">
+                    <img src="~/Images/Puros1.jpeg"
+                         class="d-block w-100"
+                         alt="Crecimiento personal"
+                         style="height: 60vh; object-fit: cover; width: 100%;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                        <h3>Crecimiento y Desarrollo</h3>
+                        <p>Invertimos en el talento y el futuro de nuestra gente.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Controllers -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselPersonasCultura" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselPersonasCultura" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+
+        <!-- Message aditional -->
+        <div class="row mt-5 g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 shadow-sm">
+                    <i class="bi bi-heart-fill fs-1" style="color: #145c42;"></i>
+                    <h5 class="mt-2">Valores compartidos</h5>
+                    <p class="text-muted">Ética, respeto y transparencia guían cada decisión.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 shadow-sm">
+                    <i class="bi bi-people-fill fs-1" style="color: #145c42;"></i>
+                    <h5 class="mt-2">Equipo unido</h5>
+                    <p class="text-muted">Fomentamos un ambiente de confianza y apoyo mutuo.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 shadow-sm">
+                    <i class="bi bi-graph-up-arrow fs-1" style="color: #145c42;"></i>
+                    <h5 class="mt-2">Innovación constante</h5>
+                    <p class="text-muted">Impulsamos el cambio con creatividad y aprendizaje.</p>
+                </div>
+            </div>
         </div>
 
     </div>
-
-
-
-    <div class="configuration-actions">
-
-        <button type="button"
-                class="btn-clear"
-                onclick="limpiarRutas()">
-
-            <i class="bi bi-eraser"></i>
-
-            Limpiar
-
-        </button>
-
-
-        <button type="button"
-                class="btn-accept">
-
-            <i class="bi bi-check-circle"></i>
-
-            Aceptar
-
-        </button>
-
-    </div>
-
-
 </div>
-
-
-@section Scripts {
-
-    <script>
-
-        async function seleccionarCarpeta(inputId) {
-
-            const input =
-                document.getElementById(inputId);
-
-
-            if ('showDirectoryPicker' in window) {
-
-                try {
-
-                    const carpeta =
-                        await window.showDirectoryPicker();
-
-                    input.value = carpeta.name;
-
-                }
-                catch (error) {
-
-                    if (error.name !== 'AbortError') {
-
-                        alert(
-                            'No fue posible seleccionar la carpeta.'
-                        );
-
-                    }
-
-                }
-
-            }
-            else {
-
-                alert(
-                    'La selección de carpetas requiere ' +
-                    'Microsoft Edge o Google Chrome actualizado.'
-                );
-
-            }
-
-        }
-
-
-
-        function limpiarRutas() {
-
-            document.getElementById('rutaEscaneo').value = '';
-
-            document.getElementById('rutaGuardado').value = '';
-
-            document.getElementById('rutaIncapacidades').value = '';
-
-        }
-
-    </script>
-
-}
