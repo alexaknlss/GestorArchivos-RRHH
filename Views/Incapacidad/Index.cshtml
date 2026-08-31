@@ -1,5 +1,32 @@
 ﻿@{
     ViewData["Title"] = "Incapacidades";
+<<<<<<< HEAD
+
+    var archivosGenerados =
+        ViewBag.ArchivosGenerados as List<string>;
+}
+
+
+@if (ViewBag.MensajeExito != null)
+{
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @ViewBag.MensajeExito
+    </div>
+}
+
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @ViewBag.Error
+    </div>
+}
+
+
+<div class="contract-page">
+=======
     var archivosGenerados = ViewBag.ArchivosGenerados as List<string>;
     var carpetaIncapacidades = ViewBag.CarpetaIncapacidades as string;
 }
@@ -28,21 +55,149 @@
 <div class="contract">
 
     <!-- Header -->
+>>>>>>> Diego
+
+    <!-- ========================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================= -->
 
     <div class="contract-header">
         <div class="contract-header-icon">
             <i class="bi bi-file-earmark-medical-fill"></i>
         </div>
         <div>
+<<<<<<< HEAD
+
+            <h2>
+                Gestión de incapacidades
+            </h2>
+
+            <p>
+                Carga el archivo PDF generado por el escáner
+                para separar las incapacidades individuales.
+=======
             <h2>Gestión de incapacidades</h2>
             <p>
                 Carga el archivo PDF generado por el escáner
                 y el Excel que contiene los códigos de los empleados.
                 Cada página del PDF generará una incapacidad individual.
+>>>>>>> Diego
             </p>
+
         </div>
     </div>
 
+<<<<<<< HEAD
+
+    <!-- ========================= -->
+    <!-- FORMULARIO -->
+    <!-- ========================= -->
+
+    <form asp-controller="Incapacidad"
+          asp-action="Procesar"
+          method="post"
+          enctype="multipart/form-data"
+          id="formIncapacidad">
+
+        <div class="contract-upload-card">
+
+
+            <div class="upload-icon">
+
+                <i class="bi bi-cloud-arrow-up"></i>
+
+            </div>
+
+
+            <h3>
+                Subir archivo PDF
+            </h3>
+
+
+            <p>
+                Selecciona el archivo PDF que contiene
+                las incapacidades escaneadas.
+            </p>
+
+
+            <!-- PDF -->
+
+            <input type="file"
+                   id="pdfIncapacidad"
+                   name="pdfIncapacidad"
+                   accept=".pdf,application/pdf"
+                   hidden />
+
+
+            <!-- SELECCIONAR PDF -->
+
+            <button type="button"
+                    class="btn-select-pdf"
+                    onclick="document.getElementById('pdfIncapacidad').click()">
+
+                <i class="bi bi-folder2-open"></i>
+
+                Seleccionar PDF
+
+            </button>
+
+
+            <!-- ARCHIVO SELECCIONADO -->
+
+            <div id="archivoSeleccionadoIncapacidad"
+                 class="selected-file">
+
+                <span class="selected-file-name">
+                    Ningún archivo seleccionado
+                </span>
+
+
+                <button type="button"
+                        id="btnQuitarIncapacidad"
+                        class="btn-remove-file"
+                        title="Quitar archivo"
+                        style="display: none;">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- PROCESAR -->
+
+            <div class="contract-process-actions">
+
+                <button type="submit"
+                        id="btnProcesarIncapacidad"
+                        class="btn-process-pdf"
+                        disabled>
+
+                    <i class="bi bi-scissors"></i>
+
+                    Procesar incapacidades
+
+                </button>
+
+            </div>
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="contract-info">
+
+                <i class="bi bi-info-circle"></i>
+
+                <span>
+                    Cada página del archivo será generada
+                    como una incapacidad PDF individual.
+                </span>
+
+            </div>
+
+
+=======
     <!-- Form -->
 
     <form asp-controller="Incapacidad"
@@ -171,10 +326,309 @@
                 </span>
             </div>
 
+>>>>>>> Diego
         </div>
 
     </form>
 
+<<<<<<< HEAD
+
+    <!-- ========================= -->
+    <!-- RESULTADOS -->
+    <!-- ========================= -->
+    @if (archivosGenerados != null &&
+             archivosGenerados.Count > 0)
+    {
+        <div class="finiquito-results">
+
+            <div class="finiquito-results-header">
+
+                <div>
+
+                    <h3>
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Incapacidades generadas
+
+                    </h3>
+
+
+                    <p>
+                        Se generaron
+                        <strong>@archivosGenerados.Count</strong>
+                        archivos PDF correctamente.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="finiquito-file-list">
+
+                @foreach (var archivo in archivosGenerados)
+                {
+                    <div class="finiquito-file-item">
+
+                        <div class="finiquito-file-info">
+
+                            <div class="finiquito-file-icon">
+
+                                <i class="bi bi-file-earmark-pdf"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    @archivo
+                                </strong>
+
+                                <span>
+                                    Documento PDF generado
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="finiquito-file-status">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            Listo
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+
+@section Scripts
+{
+    <script>
+
+        const pdfInput =
+            document.getElementById(
+                "pdfIncapacidad"
+            );
+
+        const archivoSeleccionado =
+            document.getElementById(
+                "archivoSeleccionadoIncapacidad"
+            );
+
+        const nombreArchivo =
+            archivoSeleccionado.querySelector(
+                ".selected-file-name"
+            );
+
+        const btnQuitar =
+            document.getElementById(
+                "btnQuitarIncapacidad"
+            );
+
+        const btnProcesar =
+            document.getElementById(
+                "btnProcesarIncapacidad"
+            );
+
+        const formIncapacidad =
+            document.getElementById(
+                "formIncapacidad"
+            );
+
+
+        pdfInput.addEventListener(
+            "change",
+            function () {
+
+                if (this.files.length === 0) {
+
+                    limpiarArchivo();
+
+                    return;
+                }
+
+                const archivo =
+                    this.files[0];
+
+                const esPdf =
+                    archivo.type === "application/pdf"
+                    ||
+                    archivo.name
+                        .toLowerCase()
+                        .endsWith(".pdf");
+
+                if (!esPdf) {
+
+                    alert(
+                        "Por favor selecciona un archivo PDF."
+                    );
+
+                    limpiarArchivo();
+
+                    return;
+                }
+
+                nombreArchivo.textContent =
+                    archivo.name;
+
+                btnQuitar.style.display =
+                    "flex";
+
+                btnProcesar.disabled =
+                    false;
+
+            }
+        );
+
+
+        btnQuitar.addEventListener(
+            "click",
+            function () {
+
+                limpiarArchivo();
+
+            }
+        );
+
+
+        formIncapacidad.addEventListener(
+            "submit",
+            function () {
+
+                if (pdfInput.files.length === 0) {
+
+                    alert(
+                        "Debes seleccionar un archivo PDF."
+                    );
+
+                    return false;
+                }
+
+                btnProcesar.disabled =
+                    true;
+
+                btnProcesar.innerHTML =
+                    `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true">
+                        </span>
+
+                        Procesando...
+                    `;
+
+            }
+        );
+
+
+        function limpiarArchivo() {
+
+            pdfInput.value =
+                "";
+
+            nombreArchivo.textContent =
+                "Ningún archivo seleccionado";
+
+            btnQuitar.style.display =
+                "none";
+
+            btnProcesar.disabled =
+                true;
+
+            btnProcesar.innerHTML =
+                `
+                    <i class="bi bi-scissors"></i>
+
+                    Procesar incapacidades
+                `;
+
+        }
+
+
+        // =========================================
+        // DESCARGA AUTOMÁTICA
+        // =========================================
+
+        @if (archivosGenerados != null &&
+                  archivosGenerados.Count > 0)
+        {
+                <text>
+
+                        const archivosParaDescargar =
+                            @Html.Raw(
+                                    System.Text.Json.JsonSerializer.Serialize(
+                                            archivosGenerados
+                                    )
+                            );
+
+                        const urlDescarga =
+                            '@Url.Action("Descargar", "Incapacidad")';
+
+
+                        window.addEventListener(
+                            "load",
+                            function () {
+
+                                archivosParaDescargar.forEach(
+                                    function (archivo, indice) {
+
+                                        setTimeout(
+                                            function () {
+
+                                                const enlace =
+                                                    document.createElement(
+                                                        "a"
+                                                    );
+
+                                                enlace.href =
+                                                    urlDescarga
+                                                    +
+                                                    "?nombreArchivo="
+                                                    +
+                                                    encodeURIComponent(
+                                                        archivo
+                                                    );
+
+                                                enlace.download =
+                                                    archivo;
+
+                                                enlace.style.display =
+                                                    "none";
+
+                                                document.body.appendChild(
+                                                    enlace
+                                                );
+
+                                                enlace.click();
+
+                                                enlace.remove();
+
+                                            },
+
+                                            indice * 700
+                                        );
+
+                                    }
+                                );
+
+                            }
+                        );
+
+                </text>
+=======
    
     
 
@@ -389,6 +843,7 @@
             setTimeout(() => {
                 toast.remove();
             }, 3000);
+>>>>>>> Diego
         }
 
     </script>
