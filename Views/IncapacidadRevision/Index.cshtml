@@ -1,4 +1,6 @@
-﻿@{
+﻿<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+
+@{
     ViewData["Title"] = "Revisión de Incapacidades";
 
     var todosLosArchivos = ViewBag.TodosLosArchivos as List<(string Nombre, string Carpeta)>
@@ -9,8 +11,7 @@
     var carpetaDestino = ViewBag.CarpetaDestino as string;
 }
 
-<!-- alerts  -->
-
+<!-- alerts -->
 @if (ViewBag.MensajeExito != null)
 {
     <div id="alertExito"
@@ -41,9 +42,9 @@
 
 
 <div class="contract">
+    @Html.AntiForgeryToken()
 
-    <!-- header -->
-
+         <!--header-->
     <div class="contract-header mb-3">
 
         <div class="contract-header-icon">
@@ -57,15 +58,12 @@
                 Selecciona un archivo, visualízalo y asígnale
                 un nombre personalizado.
             </p>
-
-           
         </div>
 
     </div>
 
 
-    <!-- top bar -->
-
+    <!-- form rename-->
     @if (!string.IsNullOrEmpty(nombreActual))
     {
         <div class="card mb-3">
@@ -75,8 +73,7 @@
                 <form asp-action="Guardar"
                       method="post">
 
-                    <!-- DATOS OCULTOS -->
-
+                    <!-- date -->
                     <input type="hidden"
                            name="nombreOriginal"
                            value="@nombreActual" />
@@ -88,9 +85,8 @@
 
                     <div class="row g-3 align-items-end">
 
-                        <!-- NUEVO NOMBRE -->
-
-                        <div class="col-md-4">
+                        <!-- new name-->
+                        <div class="col-md-8">
 
                             <label for="nuevoNombre"
                                    class="form-label fw-bold mb-1">
@@ -116,14 +112,51 @@
 
                             </div>
 
-                            
+                        </div>
+
+
+                        <!--selected -->
+                        <div class="col-md-4">
+
+                            <label for="selectTipo"
+                                   class="form-label fw-bold mb-1">
+
+                                <i class="bi bi-tag me-1"></i>
+                                Tipo de incapacidad
+
+                            </label>
+
+                            <div class="d-flex gap-2">
+
+                                <select id="selectTipo"
+                                        class="form-select"
+                                        title="Tipo de incapacidad">
+                                    <!-- llamado js -->
+                                </select>
+
+                                <button type="button"
+                                        id="btnAddTipo"
+                                        class="btn btn-outline-success flex-shrink-0"
+                                        title="Agregar nuevo tipo">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+
+                                <button type="button"
+                                        id="btnDelTipo"
+                                        class="btn btn-outline-danger flex-shrink-0"
+                                        title="Eliminar tipo seleccionado">
+                                    <i class="bi bi-dash-lg"></i>
+                                </button>
+
+                            </div>
+
+                           
 
                         </div>
 
 
-                        <!-- url destination -->
-
-                        <div class="col-md-6">
+                        <!-- url save -->
+                        <div class="col-md-10">
 
                             <label for="carpetaDestino"
                                    class="form-label fw-bold mb-1">
@@ -140,13 +173,10 @@
                                    placeholder="Ruta donde se guardarán los archivos renombrados"
                                    value="@carpetaDestino" />
 
-                           
-
                         </div>
 
 
-                        <!-- Button save -->
-
+                        <!-- btn save-->
                         <div class="col-md-2">
 
                             <button type="submit"
@@ -170,18 +200,15 @@
 
 
     <!-- content principal -->
-
     <div class="row g-3">
 
 
-        <!-- column left -->
-
+        <!--list file -->
         <div class="col-md-3">
 
             <div class="card h-100">
 
-                <!-- Header  -->
-
+                <!-- Header -->
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
 
                     <span>
@@ -197,7 +224,6 @@
 
 
                 <!-- list -->
-
                 <div class="card-body p-0"
                      style="height: 72vh; overflow-y: auto;">
 
@@ -213,8 +239,6 @@
                                 No hay archivos pendientes
                                 en ninguna carpeta.
                             </p>
-
-                            
 
                         </div>
                     }
@@ -255,7 +279,7 @@
 
 
                                     <small class="d-block mt-1
-                                                  @(isActive ? "text-white-50" : "text-muted")"
+                                        @(isActive ? "text-white-50" : "text-muted")"
                                            style="font-size: 0.7rem;">
 
                                         <i class="bi bi-folder me-1"></i>
@@ -275,8 +299,7 @@
             </div>
 
 
-            <!-- actions -->
-
+            <!-- btn drop -->
             @if (todosLosArchivos.Count > 0 &&
                  !string.IsNullOrEmpty(nombreActual))
             {
@@ -302,8 +325,7 @@
             }
 
 
-            <!-- clear history -->
-
+            <!-- btn clean -->
             <div class="mt-2">
 
                 <form asp-action="LimpiarHistorial"
@@ -325,24 +347,21 @@
         </div>
 
 
-        <!-- Column right  -->
-        <!-- VISOR PDF -->
-
+        <!-- show pdf -->
         <div class="col-md-9">
 
             @if (string.IsNullOrEmpty(nombreActual))
             {
-                <!-- file not selected -->
-
+               
                 <div class="card"
                      style="height: 72vh;">
 
                     <div class="card-body
-                                d-flex
-                                flex-column
-                                justify-content-center
-                                align-items-center
-                                text-center">
+                        d-flex
+                        flex-column
+                        justify-content-center
+                        align-items-center
+                        text-center">
 
                         <i class="bi bi-eye-slash"
                            style="font-size: 4rem; color: #c0c0c0;">
@@ -363,23 +382,19 @@
             }
             else
             {
-                <!-- Visor pdf  -->
-
+                <!-- show pdf -->
                 <div class="card"
                      style="height: 72vh;">
 
-                    <!-- headers view -->
-
+                    <!-- Header del visor -->
                     <div class="card-header bg-light
-                                d-flex
-                                justify-content-between
-                                align-items-center">
+                        d-flex
+                        justify-content-between
+                        align-items-center">
 
                         <div class="text-truncate">
 
-                            <i class="bi bi-file-earmark-medical
-                                      me-1">
-                            </i>
+                            <i class="bi bi-file-earmark-medical me-1"></i>
 
                             Revisando:
 
@@ -401,21 +416,20 @@
                     </div>
 
 
-                    <!-- PDF -->
-
+                    <!-- Contenido: iframe PDF -->
                     <div class="card-body p-0"
                          style="height: calc(72vh - 57px);">
 
                         <iframe src="@Url.Action(
-                                        "VerPdf",
-                                        new
-                                        {
-                                            nombreArchivo = nombreActual,
-                                            carpetaOrigen = carpetaOrigen
-                                        })"
+   "VerPdf",
+  new
+   {
+    nombreArchivo = nombreActual,
+    carpetaOrigen = carpetaOrigen
+     })"
                                 style="width:100%;
-                                       height:100%;
-                                       border:none;"
+                            height:100%;
+                            border:none;"
                                 frameborder="0">
 
                             Tu navegador no soporta
@@ -436,18 +450,20 @@
 
 
 
-<!-- Scripts -->
-
+<!-- scripts-->
 @section Scripts
 {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
 
-        // auto alerts 
+     
+        // Auto alerts
+        
 
         document.addEventListener('DOMContentLoaded', function () {
 
-            const alertas =
-                document.querySelectorAll('.alert');
+            const alertas = document.querySelectorAll('.alert');
 
             alertas.forEach(function (alerta) {
 
@@ -478,21 +494,251 @@
         });
 
 
-        // name view focus
+        // Focus al input de nuevo nombre
 
         document.addEventListener('DOMContentLoaded', function () {
 
-            const input =
-                document.getElementById('nuevoNombre');
+            const input = document.getElementById('nuevoNombre');
 
             if (input) {
-
                 input.focus();
                 input.select();
-
             }
 
         });
+
+
+        // Select de tipos de incapacidad + SweetAlert
+
+        (function () {
+
+            const input  = document.getElementById('nuevoNombre');
+            const select = document.getElementById('selectTipo');
+            const btnAdd = document.getElementById('btnAddTipo');
+            const btnDel = document.getElementById('btnDelTipo');
+
+            if (!input || !select || !btnAdd || !btnDel) return;
+
+            // Anti-forgery viene del token suelto en el div.contract
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenInput ? tokenInput.value : '';
+
+            let tiposCache = [];
+
+            // carge type
+
+            async function cargarTipos() {
+                try {
+                    const res  = await fetch('@Url.Action("ListarTiposAjax")');
+                    tiposCache = await res.json();
+                    pintarSelect(tiposCache);
+                    detectarTipoEnNombre();
+                } catch (e) {
+                    console.error('Error cargando tipos', e);
+                }
+            }
+
+            function pintarSelect(tipos) {
+                select.innerHTML = '';
+
+                const optVacia = document.createElement('option');
+                optVacia.value = '';
+                optVacia.textContent = '— Sin tipo —';
+                select.appendChild(optVacia);
+
+                tipos.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.valor;
+                    opt.textContent = t.texto;
+                    select.appendChild(opt);
+                });
+            }
+
+            // type detection in name
+            // structure: cualquier-cosa-TIPO-8digitos  (opcional " (N)")
+
+            function detectarTipoEnNombre() {
+                const nombre = input.value || '';
+                const extension = '.pdf';
+                const base = nombre.toLowerCase().endsWith(extension)
+                    ? nombre.slice(0, -extension.length)
+                    : nombre;
+
+                // Patrón: cualquier-cosa-TIPO-8digitos  (opcional " (N)")
+                const match = base.match(/^(.+?)-(.+?)-(\d{8})(\s*\(\d+\))?$/);
+
+                if (!match) {
+                    select.value = '';
+                    return;
+                }
+
+                const tipoEnNombre = match[2].trim();
+
+                const encontrado = tiposCache.find(t =>
+                    t.valor.toLowerCase() === tipoEnNombre.toLowerCase()
+                );
+
+                select.value = encontrado ? encontrado.valor : '';
+            }
+
+            // Reemplaza el segmento del tipo preservando código, fecha y contador.
+
+            function aplicarTipoEnNombre(nuevoValor) {
+                let nombre = input.value || '';
+                const extension = '.pdf';
+                const base = nombre.toLowerCase().endsWith(extension)
+                    ? nombre.slice(0, -extension.length)
+                    : nombre;
+
+                const match = base.match(/^(.+?)-(.+?)-(\d{8})(\s*\(\d+\))?$/);
+
+                let nuevaBase;
+
+                if (match) {
+                    const codigo   = match[1].trim();
+                    const fecha    = match[3];
+                    const contador = match[4] || '';
+
+                    if (nuevoValor) {
+                        nuevaBase = `${codigo}-${nuevoValor}-${fecha}${contador}`;
+                    } else {
+                        // code date
+                        nuevaBase = `${codigo}-${fecha}${contador}`;
+                    }
+                } else {
+                    // Fallback
+                    if (nuevoValor) {
+                        nuevaBase = `${base}-${nuevoValor}`;
+                    } else {
+                        nuevaBase = base;
+                    }
+                }
+
+                input.value = nuevaBase + extension;
+                input.dispatchEvent(new Event('input'));
+            }
+
+            select.addEventListener('change', () => {
+                aplicarTipoEnNombre(select.value);
+            });
+
+            input.addEventListener('input', () => {
+                detectarTipoEnNombre();
+            });
+
+            // add type
+
+            btnAdd.addEventListener('click', async () => {
+
+                const { value: formValues } = await Swal.fire({
+                    title: 'Nuevo tipo de incapacidad',
+                    html:
+                        '<input id="swal-valor" class="swal2-input" ' +
+                        'placeholder="Valor (va en el nombre del archivo)">' +
+                        '<input id="swal-texto" class="swal2-input" ' +
+                        'placeholder="Texto visible (opcional)">',
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Agregar',
+                    cancelButtonText: 'Cancelar',
+                    preConfirm: () => {
+                        const valor = document.getElementById('swal-valor').value.trim();
+                        const texto = document.getElementById('swal-texto').value.trim();
+                        if (!valor) {
+                            Swal.showValidationMessage('El valor es obligatorio');
+                            return false;
+                        }
+                        return { valor, texto: texto || valor };
+                    }
+                });
+
+                if (!formValues) return;
+
+                const res = await fetch('@Url.Action("AgregarTipoAjax")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify(formValues)
+                });
+
+                const data = await res.json();
+                if (!data.ok) {
+                    Swal.fire('Error', data.mensaje, 'error');
+                    return;
+                }
+
+                await cargarTipos();
+
+                select.value = formValues.valor;
+                aplicarTipoEnNombre(formValues.valor);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Listo',
+                    text: data.mensaje,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            });
+
+            // drop type
+
+            btnDel.addEventListener('click', async () => {
+
+                if (tiposCache.length === 0) return;
+
+                const opciones = tiposCache.reduce((acc, t) => {
+                    acc[t.valor] = t.texto;
+                    return acc;
+                }, {});
+
+                const { value: valorSel } = await Swal.fire({
+                    title: 'Eliminar tipo',
+                    input: 'select',
+                    inputOptions: opciones,
+                    inputPlaceholder: 'Selecciona un tipo',
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar',
+                    confirmButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    inputValidator: (v) => !v ? 'Debes seleccionar un tipo' : null
+                });
+
+                if (!valorSel) return;
+
+                const res = await fetch('@Url.Action("EliminarTipoAjax")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify({ valor: valorSel })
+                });
+
+                const data = await res.json();
+                if (!data.ok) {
+                    Swal.fire('Error', data.mensaje, 'error');
+                    return;
+                }
+
+                await cargarTipos();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Listo',
+                    text: data.mensaje,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            });
+
+            // -------- Init --------
+
+            document.addEventListener('DOMContentLoaded', cargarTipos);
+
+        })();
 
     </script>
 }

@@ -6,57 +6,37 @@ namespace GestorArchivos_RRHH.Controllers
 {
     public class ContratoController : Controller
     {
-
-        // Settings
-
-
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
 
-        public ContratoController(IConfiguration configuration)
+        public ContratoController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
+            _env = env;
         }
-
-
-
-        // get CONTRATO
-
 
         public IActionResult Index()
         {
-            // Write result of  process 
-
-
             if (TempData["ArchivosGenerados"] != null)
             {
                 string json = TempData["ArchivosGenerados"]!.ToString()!;
-
                 List<string>? archivosGenerados = JsonSerializer.Deserialize<List<string>>(json);
-
                 ViewBag.ArchivosGenerados = archivosGenerados;
                 ViewBag.MensajeExito = TempData["MensajeExito"]?.ToString();
                 ViewBag.CarpetaContratos = TempData["CarpetaContratos"]?.ToString();
             }
 
-
-            // see error if exist
-
-
             ViewBag.Error = TempData["Error"]?.ToString();
 
-            // read the destination folder from cookie or appsettings
             string carpetaDestino = Request.Cookies["CarpetaDestino"];
-
             if (string.IsNullOrWhiteSpace(carpetaDestino))
             {
-                // Si no hay cookie, usar la de appsettings
                 carpetaDestino = _configuration["RutasArchivos:Contratos"];
                 if (!string.IsNullOrWhiteSpace(carpetaDestino))
                 {
-                    // save cookie 
                     CookieOptions options = new CookieOptions
                     {
-                        Expires = DateTime.Now.AddDays(365), 
+                        Expires = DateTime.Now.AddDays(365),
                         HttpOnly = true,
                         IsEssential = true
                     };
@@ -65,24 +45,15 @@ namespace GestorArchivos_RRHH.Controllers
             }
 
             ViewBag.CarpetaDestino = carpetaDestino;
-         
-
             return View();
         }
-
-
-
-        // Procesing CONTRATOS
-
 
         [HttpPost]
         public async Task<IActionResult> Procesar(
             IFormFile pdfContrato,
             IFormFile archivoExcel,
-            string carpetaDestino = null)  {
-            // Validate PDF
-
-
+            string carpetaDestino = null)
+        {
             if (pdfContrato == null || pdfContrato.Length == 0)
             {
                 TempData["Error"] = "Debes seleccionar un archivo PDF.";
@@ -98,10 +69,6 @@ namespace GestorArchivos_RRHH.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-
-            // Validate EXCEL
-
-
             if (archivoExcel == null || archivoExcel.Length == 0)
             {
                 TempData["Error"] = "Debes seleccionar un archivo Excel con los códigos.";
@@ -109,7 +76,6 @@ namespace GestorArchivos_RRHH.Controllers
             }
 
             string extensionExcel = Path.GetExtension(archivoExcel.FileName).ToLowerInvariant();
-
             if (extensionExcel != ".xlsx")
             {
                 TempData["Error"] = "El archivo de códigos debe ser un Excel .xlsx.";
@@ -117,7 +83,6 @@ namespace GestorArchivos_RRHH.Controllers
             }
 
             string? carpetaFinal = carpetaDestino;
-
             if (string.IsNullOrWhiteSpace(carpetaFinal))
             {
                 carpetaFinal = _configuration["RutasArchivos:Contratos"];
@@ -127,6 +92,11 @@ namespace GestorArchivos_RRHH.Controllers
             {
                 TempData["Error"] = "No se encontró configurada la ruta de contratos en appsettings.json y no se especificó una carpeta.";
                 return RedirectToAction(nameof(Index));
+            }
+
+            if (!Path.IsPathRooted(carpetaFinal))
+            {
+                carpetaFinal = Path.Combine(_env.ContentRootPath, carpetaFinal);
             }
 
             try
@@ -139,59 +109,30 @@ namespace GestorArchivos_RRHH.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Guardar la carpeta en una cookie para que persista
             CookieOptions options = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(365),
                 HttpOnly = true,
                 IsEssential = true
             };
-           
-            // File TEMPORAL
-
+            Response.Cookies.Append("CarpetaDestino", carpetaFinal, options);
 
             string carpetaTemporal = Path.Combine(Path.GetTempPath(), "GestorArchivosRRHH", "Temporal");
             Directory.CreateDirectory(carpetaTemporal);
-
-
-            // genetare name temporal unic for PDF file
-
-
             string rutaPdfOriginal = Path.Combine(carpetaTemporal, $"{Guid.NewGuid()}.pdf");
 
             try
             {
-
-                // Save PDF complet temporarily
-
-
                 using (FileStream stream = new FileStream(rutaPdfOriginal, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     await pdfContrato.CopyToAsync(stream);
                 }
 
-
-                // create services
-
-
                 PdfSplitService pdfSplitService = new PdfSplitService();
                 ExcelCodeService excelCodeService = new ExcelCodeService();
 
-
-                // Count pages in PDF
-
-
                 int cantidadPaginas = pdfSplitService.ObtenerCantidadPaginas(rutaPdfOriginal);
-
-
-                // Exel codes read from file
-
-
                 List<string> codigos = excelCodeService.LeerCodigos(archivoExcel);
-
-
-                // validate if exist codes in EXCEL file
-
 
                 if (codigos.Count == 0)
                 {
@@ -199,26 +140,18 @@ namespace GestorArchivos_RRHH.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-
-                // Validate if exist
-
-
                 if (codigos.Count != cantidadPaginas)
                 {
                     TempData["Error"] =
                         $"El PDF contiene {cantidadPaginas} páginas, " +
                         $"pero el Excel contiene {codigos.Count} códigos. " +
-                        $"La cantidad de códigos debe coincidir con " +
-                        $"la cantidad de páginas del PDF.";
+                        $"La cantidad de códigos debe coincidir con la cantidad de páginas del PDF.";
                     return RedirectToAction(nameof(Index));
                 }
 
-
-                // divide pdf with names from EXCEL file
-
                 var resultado = pdfSplitService.DividirPdfConNombres(
                     rutaPdfOriginal,
-                    carpetaFinal, 
+                    carpetaFinal,
                     paginasPorDocumento: 1,
                     codigos: codigos
                 );
@@ -226,118 +159,70 @@ namespace GestorArchivos_RRHH.Controllers
                 int cantidadGenerada = resultado.cantidadGenerada;
                 List<string> archivosGenerados = resultado.nombresArchivos;
 
-
-                // Verific all files exist in the destination folder. If any file is missing, it will be re moved from the list. 
-
-
                 archivosGenerados = archivosGenerados
-                    .Where(nombre => System.IO.File.Exists(Path.Combine(carpetaFinal, nombre))) // ========================================= CAMBIO (INICIO) =========================================
+                    .Where(nombre => System.IO.File.Exists(Path.Combine(carpetaFinal, nombre)))
                     .ToList();
 
-
-                // Save result 
-
-
                 TempData["ArchivosGenerados"] = JsonSerializer.Serialize(archivosGenerados);
-                TempData["MensajeExito"] = $" Proceso completado. Se generaron {cantidadGenerada} contratos.";
-                TempData["CarpetaContratos"] = carpetaFinal; // ========================================= CAMBIO (INICIO) =========================================
-
-
-                //Open folder 
+                TempData["MensajeExito"] = $"Proceso completado. Se generaron {cantidadGenerada} contratos.";
+                TempData["CarpetaContratos"] = carpetaFinal;
 
                 try
                 {
-                    System.Diagnostics.Process.Start("explorer.exe", carpetaFinal); // ========================================= CAMBIO (INICIO) =========================================
+                    System.Diagnostics.Process.Start("explorer.exe", carpetaFinal);
                 }
                 catch (Exception ex)
                 {
-                    
                     Console.WriteLine($"No se pudo abrir la carpeta: {ex.Message}");
                 }
-
-
-                // redirect a index with result
-
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-
-                // See Errors
-
-
                 TempData["Error"] = $"Ocurrió un error al procesar los contratos: {ex.Message}";
                 return RedirectToAction(nameof(Index));
             }
             finally
             {
-
-                // delete original PDF file
-
                 if (System.IO.File.Exists(rutaPdfOriginal))
                 {
                     try
                     {
                         System.IO.File.Delete(rutaPdfOriginal);
                     }
-                    catch
-                    {
-                        // No interrumpir el proceso
-                    }
+                    catch { }
                 }
             }
         }
 
-
-
-        // Dowload CONTRATO 
         [HttpGet]
         public IActionResult Descargar(string nombreArchivo)
         {
-
-            // Validar name
-
-
             if (string.IsNullOrWhiteSpace(nombreArchivo))
             {
                 return NotFound();
             }
 
-            // Url no valid 
-
-
             nombreArchivo = Path.GetFileName(nombreArchivo);
 
-
-
-
             string? carpetaContratos = _configuration["RutasArchivos:Contratos"];
-
             if (string.IsNullOrWhiteSpace(carpetaContratos))
             {
                 return BadRequest("No está configurada la ruta de destino de contratos.");
             }
 
-
-            // CONSTRUIR RUTA DEL ARCHIVO
-
+            if (!Path.IsPathRooted(carpetaContratos))
+            {
+                carpetaContratos = Path.Combine(_env.ContentRootPath, carpetaContratos);
+            }
 
             string rutaArchivo = Path.Combine(carpetaContratos, nombreArchivo);
-
-
-            // validate if existe file
-
 
             if (!System.IO.File.Exists(rutaArchivo))
             {
                 return NotFound($"No se encontró el archivo: {nombreArchivo}");
             }
-
-
-            // dowload result file 
-
-
 
             return PhysicalFile(
                 rutaArchivo,

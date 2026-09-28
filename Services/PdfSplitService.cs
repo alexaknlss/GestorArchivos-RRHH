@@ -1,11 +1,12 @@
 ﻿using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using System.Globalization;
 
 namespace GestorArchivos_RRHH.Services
 {
-   
+
     /// Divide pdf en 1 y 3 docs soporta dos tipos de documentos: Contratos y Finiquitos
-    
+
     public class PdfSplitService
     {
         //Cuenta el número total de páginas de un archivo PDF
@@ -59,6 +60,15 @@ namespace GestorArchivos_RRHH.Services
             }
             return nombre.Trim();
         }
+
+
+
+
+
+
+
+
+
         // Section CONTRATOS
         public (int cantidadGenerada, List<string> nombresArchivos) DividirPdfConNombres(
             string rutaPdfOriginal,           // Url
@@ -131,9 +141,9 @@ namespace GestorArchivos_RRHH.Services
                 );
             }
 
-            // date new
+            // date new (format: yyyyMMdd → 20260910)
 
-            string fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
+            string fechaActual = DateTime.Now.ToString("yyyyMMdd");
 
             //name of the files generated
             List<string> nombresArchivos = new List<string>();
@@ -165,22 +175,23 @@ namespace GestorArchivos_RRHH.Services
 
                 codigo = LimpiarNombreArchivo(codigo);
 
-                //code identity unique
+                //build the base name for the file (without counter)
+                //rename the name of contrato file here 
+                string baseNombre = $"{codigo}- Employment Agreement-{fechaActual}";
 
-                string identificador = Guid.NewGuid().ToString("N").Substring(0, 4).ToUpperInvariant();
                 //create new name for the file generated
-
-                string nombreArchivo = $"{codigo}- Employeement Agreement-{fechaActual}-{identificador}.pdf";
+                string nombreArchivo = $"{baseNombre}.pdf";
 
                 //construct the complete path for the new file
-
                 string rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
 
+                // protect against overwriting existing files
+                int contador = 1;
                 while (File.Exists(rutaArchivoSalida))
                 {
-                    identificador = Guid.NewGuid().ToString("N").Substring(0, 4).ToUpperInvariant();
-                    nombreArchivo = $"{codigo}- Employeement Agreement-{fechaActual}-{identificador}.pdf";
+                    nombreArchivo = $"{baseNombre}-{contador}.pdf";
                     rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
+                    contador++;
                 }
 
                 nombresArchivos.Add(nombreArchivo);
@@ -196,6 +207,11 @@ namespace GestorArchivos_RRHH.Services
 
             return (numeroDocumento - 1, nombresArchivos);
         }
+
+
+
+
+
 
 
         //secction Finiquitos
@@ -282,10 +298,10 @@ namespace GestorArchivos_RRHH.Services
                 );
             }
 
-            //validate date 
+            //validate date (always December 30 of current year: yyyy1230)
 
             int añoActual = DateTime.Now.Year;
-            string fechaFiniquito = $"30-12-{añoActual}";
+            string fechaFiniquito = $"{añoActual}1230";
 
             //list to store the names of the generated files
 
@@ -320,20 +336,23 @@ namespace GestorArchivos_RRHH.Services
                 }
                 codigo = LimpiarNombreArchivo(codigo);
 
-                // generate code unique that document
+                //build the base name for the file (without counter)
+                //rename the finiquito file here
+                string baseNombre = $"{codigo}-Termination letter-{fechaFiniquito}";
 
-                string identificador = Guid.NewGuid().ToString("N").Substring(0, 4).ToUpperInvariant();
+                //create new name for the file generated
+                string nombreArchivo = $"{baseNombre}.pdf";
 
-                string nombreArchivo = $"{codigo}-Involuntary Termination Letter-{fechaFiniquito}-{identificador}.pdf";
                 //Url complete for the new file
-
                 string rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
-                //protected for overwrite the file if it already exists
+
+                //protect against overwriting existing files
+                int contador = 1;
                 while (File.Exists(rutaArchivoSalida))
                 {
-                    identificador = Guid.NewGuid().ToString("N").Substring(0, 4).ToUpperInvariant();
-                    nombreArchivo = $"{codigo}-Involuntary Termination Letter-{fechaFiniquito}-{identificador}.pdf";
+                    nombreArchivo = $"{baseNombre}-{contador}.pdf";
                     rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
+                    contador++;
                 }
 
                 //save pdf 
@@ -349,208 +368,83 @@ namespace GestorArchivos_RRHH.Services
         }
 
 
-        // Método legacy para finiquitos (sin códigos)
-        public int DividirPdf(
-            string rutaPdfOriginal,
-            string carpetaDestino,
-            int paginasPorDocumento,
-            string prefijoArchivo
-        )
-        {
-            if (string.IsNullOrWhiteSpace(rutaPdfOriginal))
-            {
-                throw new ArgumentException("La ruta del archivo PDF es obligatoria.");
-            }
-
-            if (!File.Exists(rutaPdfOriginal))
-            {
-                throw new FileNotFoundException("No se encontró el archivo PDF seleccionado.", rutaPdfOriginal);
-            }
-
-            if (string.IsNullOrWhiteSpace(carpetaDestino))
-            {
-                throw new ArgumentException("La carpeta de destino es obligatoria.");
-            }
-
-            Directory.CreateDirectory(carpetaDestino);
-
-            if (paginasPorDocumento <= 0)
-            {
-                throw new ArgumentException("La cantidad de páginas por documento debe ser mayor que cero.");
-            }
-
-            if (string.IsNullOrWhiteSpace(prefijoArchivo))
-            {
-                throw new ArgumentException("El prefijo del archivo es obligatorio.");
-            }
-
-            using PdfDocument documentoOriginal = PdfReader.Open(rutaPdfOriginal, PdfDocumentOpenMode.Import);
-
-            int totalPaginas = documentoOriginal.PageCount;
-
-            if (totalPaginas == 0)
-            {
-                throw new InvalidOperationException("El archivo PDF no contiene páginas.");
-            }
-
-            if (totalPaginas % paginasPorDocumento != 0)
-            {
-                int paginasSobrantes = totalPaginas % paginasPorDocumento;
-
-                throw new InvalidOperationException(
-                    $"El PDF contiene {totalPaginas} páginas. " +
-                    $"Los documentos deben contener grupos exactos de " +
-                    $"{paginasPorDocumento} página(s). " +
-                    $"Quedan {paginasSobrantes} página(s) sin completar."
-                );
-            }
-
-            // Divide
-
-            int numeroDocumento = 1;
-
-            for (int paginaInicial = 0; paginaInicial < totalPaginas; paginaInicial += paginasPorDocumento)
-            {
-                using PdfDocument nuevoDocumento = new PdfDocument();
-
-                for (int pagina = 0; pagina < paginasPorDocumento; pagina++)
-                {
-                    nuevoDocumento.AddPage(documentoOriginal.Pages[paginaInicial + pagina]);
-                }
-                //Generate name 
-                string nombreArchivo = $"{prefijoArchivo}_{numeroDocumento:D4}.pdf";
-                string rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
-
-                if (File.Exists(rutaArchivoSalida))
-                {
-                    int consecutivo = 2;
-                    string nombreBase = $"{prefijoArchivo}_{numeroDocumento:D4}";
-
-                    do
-                    {
-                        nombreArchivo = $"{nombreBase}_{consecutivo}.pdf";
-                        rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
-                        consecutivo++;
-                    } while (File.Exists(rutaArchivoSalida));
-                }
-
-                //Pdf save
-
-                nuevoDocumento.Save(rutaArchivoSalida);
-
-                numeroDocumento++;
-            }
-            //retur cantidad of documents generated
-
-            return numeroDocumento - 1;
-        }
 
 
-        // Divide PDF - INCAPACIDADES
+
+
+
 
         public (int cantidadGenerada, List<string> nombresArchivos) DividirPdfIncapacidades(
-            string rutaPdfOriginal,
-            string carpetaDestino,
-            int paginasPorDocumento,
-            List<string> codigos
-        )
+     string rutaPdfOriginal,
+     string carpetaDestino,
+     List<string> codigos,
+     int paginasPorDocumento = 1)
         {
-            // validate PDF
+            // Validación del parámetro
+            if (paginasPorDocumento <= 0)
+                throw new ArgumentException("El número de páginas por documento debe ser mayor a cero.",
+                    nameof(paginasPorDocumento));
 
+            // Validar PDF
             if (string.IsNullOrWhiteSpace(rutaPdfOriginal))
-            {
                 throw new ArgumentException("La ruta del archivo PDF es obligatoria.");
-            }
 
             if (!File.Exists(rutaPdfOriginal))
-            {
                 throw new FileNotFoundException("No se encontró el archivo PDF seleccionado.", rutaPdfOriginal);
-            }
 
-            // Validate destination folder
-
+            // Validar carpeta destino
             if (string.IsNullOrWhiteSpace(carpetaDestino))
-            {
                 throw new ArgumentException("La carpeta de destino es obligatoria.");
-            }
 
             Directory.CreateDirectory(carpetaDestino);
 
-            // Validate page for document
-
-            if (paginasPorDocumento <= 0)
-            {
-                throw new ArgumentException("La cantidad de páginas por documento debe ser mayor que cero.");
-            }
-
-            // Validate codes list
-
+            // Validar códigos
             if (codigos == null || codigos.Count == 0)
-            {
                 throw new InvalidOperationException("No se encontraron códigos de empleados.");
-            }
 
-            // Open the original pdf 
-
+            // Abrir PDF original
             using PdfDocument documentoOriginal = PdfReader.Open(rutaPdfOriginal, PdfDocumentOpenMode.Import);
 
             int totalPaginas = documentoOriginal.PageCount;
 
-            // Validate pdf empty
-
             if (totalPaginas == 0)
-            {
                 throw new InvalidOperationException("El archivo PDF no contiene páginas.");
-            }
 
-            // Validate complete groups
-
+            // Validar grupos completos
             if (totalPaginas % paginasPorDocumento != 0)
             {
                 int paginasSobrantes = totalPaginas % paginasPorDocumento;
-
                 throw new InvalidOperationException(
                     $"El PDF contiene {totalPaginas} páginas. " +
-                    $"Las incapacidades deben contener grupos exactos de " +
-                    $"{paginasPorDocumento} página(s). " +
+                    $"Cada incapacidad debe tener {paginasPorDocumento} página(s). " +
                     $"Quedan {paginasSobrantes} página(s) sin completar."
                 );
             }
-
-            // calculate the number of documents to generate
 
             int cantidadDocumentos = totalPaginas / paginasPorDocumento;
 
-            // Validate number of codes 
-
+            // Validar cantidad de códigos
             if (codigos.Count != cantidadDocumentos)
             {
                 throw new InvalidOperationException(
-                    $"El PDF generará {cantidadDocumentos} incapacidades, " +
-                    $"pero el Excel contiene {codigos.Count} códigos. " +
-                    $"La cantidad de códigos debe coincidir con la cantidad de incapacidades a generar."
+                    $"El PDF generará {cantidadDocumentos} incapacidad(es) " +
+                    $"(con {paginasPorDocumento} página(s) cada una). " +
+                    $"Pero el Excel contiene {codigos.Count} código(s). " +
+                    $"La cantidad de códigos debe coincidir con la cantidad de incapacidades."
                 );
             }
 
-            // Date for the incapacity documents
-
-            string fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
-
-            // list names of the generated files
-
+            // renombrado fecha
+            string fechaActual = DateTime.Now.ToString("yyyyMMdd");
             List<string> nombresArchivos = new List<string>();
-
-            // Divide pdf
 
             int numeroDocumento = 1;
 
-            for (int paginaInicial = 0; paginaInicial < totalPaginas; paginaInicial += paginasPorDocumento)
+            for (int paginaInicial = 0;
+                 paginaInicial < totalPaginas;
+                 paginaInicial += paginasPorDocumento)
             {
-                // Create new document
-
                 using PdfDocument nuevoDocumento = new PdfDocument();
-
-                // add pages 
 
                 for (int pagina = 0; pagina < paginasPorDocumento; pagina++)
                 {
@@ -559,8 +453,6 @@ namespace GestorArchivos_RRHH.Services
 
                 string codigo = codigos[numeroDocumento - 1].Trim();
 
-                // Validate codes 
-
                 if (string.IsNullOrWhiteSpace(codigo))
                 {
                     throw new InvalidOperationException(
@@ -568,43 +460,30 @@ namespace GestorArchivos_RRHH.Services
                     );
                 }
 
-                // clear 
-
                 codigo = LimpiarNombreArchivo(codigo);
 
-                // generate unique identifier
-
-                string identificador = Guid.NewGuid().ToString("N").Substring(0, 4).ToUpperInvariant();
-
-                string nombreArchivo = $"{codigo}-Incapacidad-{fechaActual}-{identificador}.pdf";
-
-                // Url finish
-
+                // nombre sin codigo unico
+                string nombreArchivo = $"{codigo}-Medical Leave-{fechaActual}.pdf";
                 string rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
 
-                // protectes against overwriting existing files
-
+               
+                int contador = 1;
                 while (File.Exists(rutaArchivoSalida))
                 {
-                    identificador = Guid.NewGuid().ToString("N").Substring(0, 4).ToUpperInvariant();
-                    nombreArchivo = $"{codigo}-Incapacidad-{fechaActual}-{identificador}.pdf";
+                    nombreArchivo = $"{codigo}-Medical Leave-{fechaActual} ({contador}).pdf";
                     rutaArchivoSalida = Path.Combine(carpetaDestino, nombreArchivo);
+                    contador++;
                 }
 
-                // save the name of the generated file
-
                 nombresArchivos.Add(nombreArchivo);
-
-                // Save the new pdf 
 
                 nuevoDocumento.Save(rutaArchivoSalida);
 
                 numeroDocumento++;
             }
 
-            // Return the results
-
             return (numeroDocumento - 1, nombresArchivos);
         }
+
     }
 }
