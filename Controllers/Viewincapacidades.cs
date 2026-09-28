@@ -1,17 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using GestorArchivos_RRHH.Services;   
 
 namespace GestorArchivos_RRHH.Controllers
 {
     public class IncapacidadRevisionController : Controller
     {
         private readonly IConfiguration _configuration;
-
-        public IncapacidadRevisionController(IConfiguration configuration)
+        private readonly ITipoIncapacidadService _tipoService;  
+        // parametros para constructor
+        public IncapacidadRevisionController(
+            IConfiguration configuration,
+            ITipoIncapacidadService tipoService)
         {
             _configuration = configuration;
+            _tipoService = tipoService;
         }
 
-        // get history of folders (INICIO)
+        // get history of folders (inicio)
         private List<string> ObtenerHistorialCarpetas()
         {
             string historial = Request.Cookies["HistorialCarpetasIncapacidades"] ?? "";
@@ -40,7 +45,8 @@ namespace GestorArchivos_RRHH.Controllers
                 GuardarHistorialCarpetas(carpetas);
             }
         }
-        // get history of folders (FIN)
+        // get history of folders (fin)
+
         public IActionResult Index(string nombreArchivo = null, string carpetaOrigen = null)
         {
             // get history of folders
@@ -255,9 +261,9 @@ namespace GestorArchivos_RRHH.Controllers
                     }
                     catch
                     {
-                        if (i == 4) 
-                            throw; 
-                        System.Threading.Thread.Sleep(500); 
+                        if (i == 4)
+                            throw;
+                        System.Threading.Thread.Sleep(500);
                     }
                 }
 
@@ -283,7 +289,7 @@ namespace GestorArchivos_RRHH.Controllers
             }
         }
 
-       
+
 
         [HttpPost]
         public IActionResult Eliminar(string nombreArchivo, string carpetaOrigen)
@@ -327,7 +333,7 @@ namespace GestorArchivos_RRHH.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
 
         [HttpPost]
         public IActionResult LimpiarHistorial()
@@ -341,6 +347,61 @@ namespace GestorArchivos_RRHH.Controllers
             Response.Cookies.Append("HistorialCarpetasIncapacidades", "", options);
             TempData["MensajeExito"] = "Historial de carpetas limpiado.";
             return RedirectToAction(nameof(Index));
+        }
+
+        // ajax para incapacidades 
+
+        // recibe el json de ajax
+        public class TipoIncapacidadDto
+        {
+            public string? Valor { get; set; }
+            public string? Texto { get; set; }
+        }
+
+        // get of select
+        [HttpGet]
+        public IActionResult ListarTiposAjax()
+        {
+            var tipos = _tipoService.ObtenerTipos()
+                .Select(t => new { valor = t.Valor, texto = t.Texto });
+
+            return Json(tipos);
+        }
+
+        // agregar nuevo tipo
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AgregarTipoAjax([FromBody] TipoIncapacidadDto dto)
+        {
+            if (dto == null)
+                return Json(new { ok = false, mensaje = "Datos inválidos." });
+
+            var nuevo = new GestorArchivos_RRHH.Models.TipoIncapacidad
+            {
+                Valor = (dto.Valor ?? "").Trim(),
+                Texto = string.IsNullOrWhiteSpace(dto.Texto)
+                            ? (dto.Valor ?? "").Trim()
+                            : dto.Texto.Trim()
+            };
+
+            if (!_tipoService.Agregar(nuevo, out string? error))
+                return Json(new { ok = false, mensaje = error });
+
+            return Json(new { ok = true, mensaje = $"Tipo '{nuevo.Texto}' agregado." });
+        }
+
+        // eliminar tipo
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EliminarTipoAjax([FromBody] TipoIncapacidadDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Valor))
+                return Json(new { ok = false, mensaje = "Debes indicar un valor." });
+
+            if (!_tipoService.Eliminar(dto.Valor, out string? error))
+                return Json(new { ok = false, mensaje = error });
+
+            return Json(new { ok = true, mensaje = "Tipo eliminado." });
         }
     }
 }

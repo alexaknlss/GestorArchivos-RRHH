@@ -14,6 +14,9 @@ namespace GestorArchivos_RRHH.Controllers
         private readonly IConfiguration _configuration;
         private readonly PdfSplitService _pdfSplitService;
 
+        // Regla de negocio: cada incapacidad = 3 páginas del PDF
+        private const int PAGINAS_POR_INCAPACIDAD = 1;
+
         public IncapacidadController(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -44,7 +47,6 @@ namespace GestorArchivos_RRHH.Controllers
             // Mesage for errors
             ViewBag.Error = TempData["Error"]?.ToString();
 
-            
             string carpetaDestino = Request.Cookies["CarpetaDestinoIncapacidades"];
 
             if (string.IsNullOrWhiteSpace(carpetaDestino))
@@ -63,7 +65,6 @@ namespace GestorArchivos_RRHH.Controllers
             }
 
             ViewBag.CarpetaDestino = carpetaDestino;
-           
 
             return View();
         }
@@ -238,7 +239,7 @@ namespace GestorArchivos_RRHH.Controllers
         public async Task<IActionResult> Procesar(
             IFormFile pdfIncapacidad,
             IFormFile archivoExcel,
-            string carpetaDestino = null) 
+            string carpetaDestino = null)
         {
             // Validate PDF
 
@@ -257,7 +258,7 @@ namespace GestorArchivos_RRHH.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Validate  EXCEL
+            // Validate EXCEL
 
             if (archivoExcel == null || archivoExcel.Length == 0)
             {
@@ -273,7 +274,6 @@ namespace GestorArchivos_RRHH.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-         
             string? carpetaFinal = carpetaDestino;
 
             if (string.IsNullOrWhiteSpace(carpetaFinal))
@@ -305,7 +305,6 @@ namespace GestorArchivos_RRHH.Controllers
             };
             Response.Cookies.Append("CarpetaDestinoIncapacidades", carpetaFinal, options);
 
-           
             string historial = Request.Cookies["HistorialCarpetasIncapacidades"] ?? "";
             var carpetas = historial.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             if (!carpetas.Contains(carpetaFinal))
@@ -320,7 +319,7 @@ namespace GestorArchivos_RRHH.Controllers
                 };
                 Response.Cookies.Append("HistorialCarpetasIncapacidades", nuevoHistorial, historialOptions);
             }
-           
+
             // tempora folder 
 
             string carpetaTemporal = Path.Combine(Path.GetTempPath(), "GestorArchivosRRHH", "Temporal");
@@ -348,24 +347,38 @@ namespace GestorArchivos_RRHH.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Validate that the number of codes 
+                // Validate that the number of codes matches the number of
 
-                int paginasPorDocumento = 1;
+                // incapacidades (3 páginas por incapacidad)
 
-                if (codigos.Count != cantidadPaginas)
+                if (cantidadPaginas % PAGINAS_POR_INCAPACIDAD != 0)
                 {
+                    int paginasSobrantes = cantidadPaginas % PAGINAS_POR_INCAPACIDAD;
+
                     TempData["Error"] =
-                        $"El PDF contiene {cantidadPaginas} páginas, " +
-                        $"pero el Excel contiene {codigos.Count} códigos. " +
-                        $"La cantidad de códigos debe coincidir con la cantidad de páginas del PDF.";
+                        $"El PDF contiene {cantidadPaginas} páginas. " +
+                        $"Cada incapacidad debe tener {PAGINAS_POR_INCAPACIDAD} páginas. " +
+                        $"Quedan {paginasSobrantes} página(s) sin completar.";
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Divide the PDF into individual pages and save them with the corresponding codes
+                int cantidadIncapacidades = cantidadPaginas / PAGINAS_POR_INCAPACIDAD;
+
+                if (codigos.Count != cantidadIncapacidades)
+                {
+                    TempData["Error"] =
+                        $"El PDF generará {cantidadIncapacidades} incapacidad(es) " +
+                        $"(con {PAGINAS_POR_INCAPACIDAD} páginas cada una), " +
+                        $"pero el Excel contiene {codigos.Count} código(s). " +
+                        $"La cantidad de códigos debe coincidir con la cantidad de incapacidades.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Divide the PDF into groups of 3 pages and save them with the corresponding codes
                 var resultado = _pdfSplitService.DividirPdfIncapacidades(
                     rutaPdfOriginal,
-                    carpetaFinal, 
-                    paginasPorDocumento: 1,
+                    carpetaFinal,
+                    paginasPorDocumento: PAGINAS_POR_INCAPACIDAD,
                     codigos: codigos
                 );
 
@@ -374,19 +387,19 @@ namespace GestorArchivos_RRHH.Controllers
 
                 // Verificar que los archivos existen
                 archivosGenerados = archivosGenerados
-                    .Where(nombre => System.IO.File.Exists(Path.Combine(carpetaFinal, nombre))) // ========================================= CAMBIO (INICIO) =========================================
+                    .Where(nombre => System.IO.File.Exists(Path.Combine(carpetaFinal, nombre)))
                     .ToList();
 
                 // save result 
 
                 TempData["ArchivosGenerados"] = JsonSerializer.Serialize(archivosGenerados);
                 TempData["MensajeExito"] = $" Proceso completado. Se generaron {cantidadGenerada} incapacidades.";
-                TempData["CarpetaIncapacidades"] = carpetaFinal; // ========================================= CAMBIO (INICIO) =========================================
+                TempData["CarpetaIncapacidades"] = carpetaFinal;
 
                 // Open folder automatically
                 try
                 {
-                    System.Diagnostics.Process.Start("explorer.exe", carpetaFinal); // ========================================= CAMBIO (INICIO) =========================================
+                    System.Diagnostics.Process.Start("explorer.exe", carpetaFinal);
                 }
                 catch
                 {
