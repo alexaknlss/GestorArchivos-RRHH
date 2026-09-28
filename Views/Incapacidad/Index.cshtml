@@ -1,37 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Incapacidades";
-<<<<<<< HEAD
-
-    var archivosGenerados =
-        ViewBag.ArchivosGenerados as List<string>;
-}
-
-
-@if (ViewBag.MensajeExito != null)
-{
-    <div class="alert alert-success">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        @ViewBag.MensajeExito
-    </div>
-}
-
-
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        @ViewBag.Error
-    </div>
-}
-
-
-<div class="contract-page">
-=======
     var archivosGenerados = ViewBag.ArchivosGenerados as List<string>;
     var carpetaIncapacidades = ViewBag.CarpetaIncapacidades as string;
 }
 
-<!-- Message errors -->
+<!-- Mensajes -->
 @if (ViewBag.MensajeExito != null)
 {
     <div id="alertExito" class="alert alert-success alert-dismissible fade show">
@@ -50,12 +23,8 @@
     </div>
 }
 
-<!--  Principal DIV -->
-
+<!-- DIV Principal -->
 <div class="contract">
-
-    <!-- Header -->
->>>>>>> Diego
 
     <!-- ========================= -->
     <!-- ENCABEZADO -->
@@ -66,28 +35,14 @@
             <i class="bi bi-file-earmark-medical-fill"></i>
         </div>
         <div>
-<<<<<<< HEAD
-
-            <h2>
-                Gestión de incapacidades
-            </h2>
-
-            <p>
-                Carga el archivo PDF generado por el escáner
-                para separar las incapacidades individuales.
-=======
             <h2>Gestión de incapacidades</h2>
             <p>
                 Carga el archivo PDF generado por el escáner
                 y el Excel que contiene los códigos de los empleados.
                 Cada página del PDF generará una incapacidad individual.
->>>>>>> Diego
             </p>
-
         </div>
     </div>
-
-<<<<<<< HEAD
 
     <!-- ========================= -->
     <!-- FORMULARIO -->
@@ -99,120 +54,13 @@
           enctype="multipart/form-data"
           id="formIncapacidad">
 
-        <div class="contract-upload-card">
-
-
-            <div class="upload-icon">
-
-                <i class="bi bi-cloud-arrow-up"></i>
-
-            </div>
-
-
-            <h3>
-                Subir archivo PDF
-            </h3>
-
-
-            <p>
-                Selecciona el archivo PDF que contiene
-                las incapacidades escaneadas.
-            </p>
-
-
-            <!-- PDF -->
-
-            <input type="file"
-                   id="pdfIncapacidad"
-                   name="pdfIncapacidad"
-                   accept=".pdf,application/pdf"
-                   hidden />
-
-
-            <!-- SELECCIONAR PDF -->
-
-            <button type="button"
-                    class="btn-select-pdf"
-                    onclick="document.getElementById('pdfIncapacidad').click()">
-
-                <i class="bi bi-folder2-open"></i>
-
-                Seleccionar PDF
-
-            </button>
-
-
-            <!-- ARCHIVO SELECCIONADO -->
-
-            <div id="archivoSeleccionadoIncapacidad"
-                 class="selected-file">
-
-                <span class="selected-file-name">
-                    Ningún archivo seleccionado
-                </span>
-
-
-                <button type="button"
-                        id="btnQuitarIncapacidad"
-                        class="btn-remove-file"
-                        title="Quitar archivo"
-                        style="display: none;">
-
-                    <i class="bi bi-x-lg"></i>
-
-                </button>
-
-            </div>
-
-
-            <!-- PROCESAR -->
-
-            <div class="contract-process-actions">
-
-                <button type="submit"
-                        id="btnProcesarIncapacidad"
-                        class="btn-process-pdf"
-                        disabled>
-
-                    <i class="bi bi-scissors"></i>
-
-                    Procesar incapacidades
-
-                </button>
-
-            </div>
-
-
-            <!-- INFORMACIÓN -->
-
-            <div class="contract-info">
-
-                <i class="bi bi-info-circle"></i>
-
-                <span>
-                    Cada página del archivo será generada
-                    como una incapacidad PDF individual.
-                </span>
-
-            </div>
-
-
-=======
-    <!-- Form -->
-
-    <form asp-controller="Incapacidad"
-          asp-action="Procesar"
-          method="post"
-          enctype="multipart/form-data"
-          id="formIncapacidad">
-
         <div class="contract-upload-card mt-5">
 
-            <!--Pdf and Exel -->
+            <!-- PDF y Excel -->
 
             <div class="upload-files-container">
 
-                <!-- Pdf -->
+                <!-- PDF -->
                 <div class="upload-item">
                     <h3>Subir archivo PDF</h3>
                     <p>
@@ -245,7 +93,7 @@
                     </div>
                 </div>
 
-                <!-- Exel -->
+                <!-- Excel -->
                 <div class="upload-item">
                     <h3>Subir archivo Excel</h3>
                     <p>
@@ -280,7 +128,7 @@
 
             </div>
 
-            <!-- Select folder -->
+            <!-- Carpeta destino -->
             <div class="row mt-3">
                 <div class="col-md-12">
                     <div class="form-group text-start">
@@ -301,10 +149,8 @@
                     </div>
                 </div>
             </div>
-            <!-- Select folder End -->
 
-            <!-- Process -->
-
+            <!-- Procesar -->
             <div class="contract-process-actions">
                 <button type="submit"
                         id="btnProcesarIncapacidad"
@@ -316,7 +162,6 @@
             </div>
 
             <!-- Info -->
-
             <div class="contract-info">
                 <i class="bi bi-info-circle"></i>
                 <span>
@@ -326,44 +171,31 @@
                 </span>
             </div>
 
->>>>>>> Diego
         </div>
 
     </form>
 
-<<<<<<< HEAD
-
     <!-- ========================= -->
     <!-- RESULTADOS -->
     <!-- ========================= -->
-    @if (archivosGenerados != null &&
-             archivosGenerados.Count > 0)
+
+    @if (archivosGenerados != null && archivosGenerados.Count > 0)
     {
         <div class="finiquito-results">
 
             <div class="finiquito-results-header">
-
                 <div>
-
                     <h3>
-
                         <i class="bi bi-check-circle-fill"></i>
-
                         Incapacidades generadas
-
                     </h3>
-
-
                     <p>
                         Se generaron
                         <strong>@archivosGenerados.Count</strong>
                         archivos PDF correctamente.
                     </p>
-
                 </div>
-
             </div>
-
 
             <div class="finiquito-file-list">
 
@@ -374,33 +206,19 @@
                         <div class="finiquito-file-info">
 
                             <div class="finiquito-file-icon">
-
                                 <i class="bi bi-file-earmark-pdf"></i>
-
                             </div>
 
-
                             <div>
-
-                                <strong>
-                                    @archivo
-                                </strong>
-
-                                <span>
-                                    Documento PDF generado
-                                </span>
-
+                                <strong>@archivo</strong>
+                                <span>Documento PDF generado</span>
                             </div>
 
                         </div>
 
-
                         <div class="finiquito-file-status">
-
                             <i class="bi bi-check-circle-fill"></i>
-
                             Listo
-
                         </div>
 
                     </div>
@@ -413,281 +231,81 @@
 
 </div>
 
-
-@section Scripts
-{
-    <script>
-
-        const pdfInput =
-            document.getElementById(
-                "pdfIncapacidad"
-            );
-
-        const archivoSeleccionado =
-            document.getElementById(
-                "archivoSeleccionadoIncapacidad"
-            );
-
-        const nombreArchivo =
-            archivoSeleccionado.querySelector(
-                ".selected-file-name"
-            );
-
-        const btnQuitar =
-            document.getElementById(
-                "btnQuitarIncapacidad"
-            );
-
-        const btnProcesar =
-            document.getElementById(
-                "btnProcesarIncapacidad"
-            );
-
-        const formIncapacidad =
-            document.getElementById(
-                "formIncapacidad"
-            );
-
-
-        pdfInput.addEventListener(
-            "change",
-            function () {
-
-                if (this.files.length === 0) {
-
-                    limpiarArchivo();
-
-                    return;
-                }
-
-                const archivo =
-                    this.files[0];
-
-                const esPdf =
-                    archivo.type === "application/pdf"
-                    ||
-                    archivo.name
-                        .toLowerCase()
-                        .endsWith(".pdf");
-
-                if (!esPdf) {
-
-                    alert(
-                        "Por favor selecciona un archivo PDF."
-                    );
-
-                    limpiarArchivo();
-
-                    return;
-                }
-
-                nombreArchivo.textContent =
-                    archivo.name;
-
-                btnQuitar.style.display =
-                    "flex";
-
-                btnProcesar.disabled =
-                    false;
-
-            }
-        );
-
-
-        btnQuitar.addEventListener(
-            "click",
-            function () {
-
-                limpiarArchivo();
-
-            }
-        );
-
-
-        formIncapacidad.addEventListener(
-            "submit",
-            function () {
-
-                if (pdfInput.files.length === 0) {
-
-                    alert(
-                        "Debes seleccionar un archivo PDF."
-                    );
-
-                    return false;
-                }
-
-                btnProcesar.disabled =
-                    true;
-
-                btnProcesar.innerHTML =
-                    `
-                        <span
-                            class="spinner-border spinner-border-sm"
-                            aria-hidden="true">
-                        </span>
-
-                        Procesando...
-                    `;
-
-            }
-        );
-
-
-        function limpiarArchivo() {
-
-            pdfInput.value =
-                "";
-
-            nombreArchivo.textContent =
-                "Ningún archivo seleccionado";
-
-            btnQuitar.style.display =
-                "none";
-
-            btnProcesar.disabled =
-                true;
-
-            btnProcesar.innerHTML =
-                `
-                    <i class="bi bi-scissors"></i>
-
-                    Procesar incapacidades
-                `;
-
-        }
-
-
-        // =========================================
-        // DESCARGA AUTOMÁTICA
-        // =========================================
-
-        @if (archivosGenerados != null &&
-                  archivosGenerados.Count > 0)
-        {
-                <text>
-
-                        const archivosParaDescargar =
-                            @Html.Raw(
-                                    System.Text.Json.JsonSerializer.Serialize(
-                                            archivosGenerados
-                                    )
-                            );
-
-                        const urlDescarga =
-                            '@Url.Action("Descargar", "Incapacidad")';
-
-
-                        window.addEventListener(
-                            "load",
-                            function () {
-
-                                archivosParaDescargar.forEach(
-                                    function (archivo, indice) {
-
-                                        setTimeout(
-                                            function () {
-
-                                                const enlace =
-                                                    document.createElement(
-                                                        "a"
-                                                    );
-
-                                                enlace.href =
-                                                    urlDescarga
-                                                    +
-                                                    "?nombreArchivo="
-                                                    +
-                                                    encodeURIComponent(
-                                                        archivo
-                                                    );
-
-                                                enlace.download =
-                                                    archivo;
-
-                                                enlace.style.display =
-                                                    "none";
-
-                                                document.body.appendChild(
-                                                    enlace
-                                                );
-
-                                                enlace.click();
-
-                                                enlace.remove();
-
-                                            },
-
-                                            indice * 700
-                                        );
-
-                                    }
-                                );
-
-                            }
-                        );
-
-                </text>
-=======
-   
-    
-
-</div>
-
 <!-- Scripts -->
 @section Scripts
 {
     <script>
-        // Five secunds to hide the alert messages
 
-        document.addEventListener('DOMContentLoaded', function() {
+        // ============================================================
+        // Auto-ocultar alertas después de 5 segundos
+        // ============================================================
+
+        document.addEventListener('DOMContentLoaded', function () {
+
             const alertas = document.querySelectorAll('.alert');
 
-            alertas.forEach(function(alerta) {
-                if (alerta.classList.contains('alert-success') ||
-                    alerta.classList.contains('alert-danger')) {
+            alertas.forEach(function (alerta) {
 
-                    const tiempoVisualizacion = 5000;
+                if (
+                    alerta.classList.contains('alert-success') ||
+                    alerta.classList.contains('alert-danger')
+                ) {
 
-                    setTimeout(function() {
+                    setTimeout(function () {
+
                         alerta.classList.remove('show');
                         alerta.classList.add('fade');
 
-                        setTimeout(function() {
+                        setTimeout(function () {
+
                             if (alerta.parentNode) {
                                 alerta.remove();
                             }
+
                         }, 300);
-                    }, tiempoVisualizacion);
+
+                    }, 5000);
+
                 }
+
             });
+
         });
 
-        // Elements
 
-        const pdfInput = document.getElementById("pdfIncapacidad");
+        // ============================================================
+        // Elementos
+        // ============================================================
+
+        const pdfInput           = document.getElementById("pdfIncapacidad");
         const archivoSeleccionado = document.getElementById("archivoSeleccionadoIncapacidad");
-        const nombreArchivo = archivoSeleccionado.querySelector(".selected-file-name");
-        const btnQuitar = document.getElementById("btnQuitarIncapacidad");
+        const nombreArchivo      = archivoSeleccionado.querySelector(".selected-file-name");
+        const btnQuitar          = document.getElementById("btnQuitarIncapacidad");
 
-        const excelInput = document.getElementById("archivoExcel");
-        const excelSeleccionado = document.getElementById("excelSeleccionado");
-        const nombreExcel = excelSeleccionado.querySelector(".selected-excel-name");
-        const btnQuitarExcel = document.getElementById("btnQuitarExcel");
+        const excelInput         = document.getElementById("archivoExcel");
+        const excelSeleccionado  = document.getElementById("excelSeleccionado");
+        const nombreExcel        = excelSeleccionado.querySelector(".selected-excel-name");
+        const btnQuitarExcel     = document.getElementById("btnQuitarExcel");
 
-        const btnProcesar = document.getElementById("btnProcesarIncapacidad");
-        const formIncapacidad = document.getElementById("formIncapacidad");
+        const btnProcesar        = document.getElementById("btnProcesarIncapacidad");
+        const formIncapacidad    = document.getElementById("formIncapacidad");
 
-        // Selected PDF
 
-        pdfInput.addEventListener("change", function() {
+        // ============================================================
+        // Selección de PDF
+        // ============================================================
+
+        pdfInput.addEventListener("change", function () {
+
             if (this.files.length === 0) {
                 limpiarArchivo();
                 return;
             }
 
             const archivo = this.files[0];
-            const esPdf = archivo.type === "application/pdf" ||
+
+            const esPdf =
+                archivo.type === "application/pdf" ||
                 archivo.name.toLowerCase().endsWith(".pdf");
 
             if (!esPdf) {
@@ -699,17 +317,23 @@
             nombreArchivo.textContent = archivo.name;
             btnQuitar.style.display = "flex";
             actualizarEstadoBoton();
+
         });
 
-        // Selected  Exel
 
-        excelInput.addEventListener("change", function() {
+        // ============================================================
+        // Selección de Excel
+        // ============================================================
+
+        excelInput.addEventListener("change", function () {
+
             if (this.files.length === 0) {
                 limpiarExcel();
                 return;
             }
 
             const archivo = this.files[0];
+
             const esExcel = archivo.name.toLowerCase().endsWith(".xlsx");
 
             if (!esExcel) {
@@ -721,29 +345,43 @@
             nombreExcel.textContent = archivo.name;
             btnQuitarExcel.style.display = "flex";
             actualizarEstadoBoton();
+
         });
 
-        // Remove Files
 
-        btnQuitar.addEventListener("click", function() {
+        // ============================================================
+        // Quitar archivos
+        // ============================================================
+
+        btnQuitar.addEventListener("click", function () {
             limpiarArchivo();
         });
 
-        btnQuitarExcel.addEventListener("click", function() {
+        btnQuitarExcel.addEventListener("click", function () {
             limpiarExcel();
         });
 
-        // Update Button State
+
+        // ============================================================
+        // Actualizar estado del botón procesar
+        // ============================================================
 
         function actualizarEstadoBoton() {
-            const pdfSeleccionado = pdfInput.files.length > 0;
+
+            const pdfSeleccionado   = pdfInput.files.length > 0;
             const excelSeleccionado = excelInput.files.length > 0;
+
             btnProcesar.disabled = !(pdfSeleccionado && excelSeleccionado);
+
         }
 
-        // Procesing
 
-        formIncapacidad.addEventListener("submit", function(event) {
+        // ============================================================
+        // Submit
+        // ============================================================
+
+        formIncapacidad.addEventListener("submit", function (event) {
+
             if (pdfInput.files.length === 0) {
                 event.preventDefault();
                 alert("Debes seleccionar un archivo PDF.");
@@ -758,92 +396,54 @@
 
             btnProcesar.disabled = true;
             btnProcesar.innerHTML = `
-                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        Procesando...
-                    `;
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                Procesando...
+            `;
+
         });
 
-        // Clear PDF
+
+        // ============================================================
+        // Limpiar PDF
+        // ============================================================
 
         function limpiarArchivo() {
+
             pdfInput.value = "";
             nombreArchivo.textContent = "Ningún archivo seleccionado";
             btnQuitar.style.display = "none";
             actualizarEstadoBoton();
             restaurarBoton();
+
         }
 
-        // Clear Exel
+
+        // ============================================================
+        // Limpiar Excel
+        // ============================================================
 
         function limpiarExcel() {
+
             excelInput.value = "";
             nombreExcel.textContent = "Ningún archivo Excel seleccionado";
             btnQuitarExcel.style.display = "none";
             actualizarEstadoBoton();
             restaurarBoton();
+
         }
 
-        // Restore Button
+
+        // ============================================================
+        // Restaurar botón
+        // ============================================================
 
         function restaurarBoton() {
+
             btnProcesar.innerHTML = `
-                        <i class="bi bi-scissors"></i>
-                        Procesar incapacidades
-                    `;
-        }
+                <i class="bi bi-scissors"></i>
+                Procesar incapacidades
+            `;
 
-        // Open Folder
-
-        function abrirCarpeta(ruta) {
-            try {
-                const url = 'file:///' + ruta.replace(/\\/g, '/');
-                window.open(url, '_blank');
-            } catch (e) {
-                alert('Abre esta carpeta manualmente:\n' + ruta);
-            }
-        }
-
-        // Copy url
-
-        function copiarRuta(ruta) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(ruta)
-                    .then(() => {
-                        mostrarToast(' Ruta copiada al portapapeles');
-                    })
-                    .catch(() => {
-                        fallbackCopiarRuta(ruta);
-                    });
-            } else {
-                fallbackCopiarRuta(ruta);
-            }
-        }
-
-        function fallbackCopiarRuta(ruta) {
-            const input = document.createElement('input');
-            input.value = ruta;
-            document.body.appendChild(input);
-            input.select();
-            try {
-                document.execCommand('copy');
-                mostrarToast(' Ruta copiada al portapapeles');
-            } catch (e) {
-                alert('Copia manualmente esta ruta:\n' + ruta);
-            }
-            document.body.removeChild(input);
-        }
-
-        function mostrarToast(mensaje) {
-            const toast = document.createElement('div');
-            toast.className = 'alert alert-success position-fixed top-0 end-0 m-3';
-            toast.style.zIndex = '9999';
-            toast.style.maxWidth = '400px';
-            toast.innerHTML = mensaje;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
->>>>>>> Diego
         }
 
     </script>

@@ -1,20 +1,19 @@
 ﻿using GestorArchivos_RRHH.Services;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
-=======
 using System.Text.Json;
->>>>>>> Diego
 
 namespace GestorArchivos_RRHH.Controllers
 {
     public class IncapacidadController : Controller
     {
-        // Setting 
+        // ============================================================
+        // Configuración
+        // ============================================================
 
         private readonly IConfiguration _configuration;
         private readonly PdfSplitService _pdfSplitService;
 
-        // Regla de negocio: cada incapacidad = 3 páginas del PDF
+        // Regla de negocio: 1 página del PDF = 1 incapacidad
         private const int PAGINAS_POR_INCAPACIDAD = 1;
 
         public IncapacidadController(IConfiguration configuration)
@@ -23,11 +22,13 @@ namespace GestorArchivos_RRHH.Controllers
             _pdfSplitService = new PdfSplitService();
         }
 
-        // get INCAPACIDAD/INDEX
+
+        // ============================================================
+        // GET: INCAPACIDAD/INDEX
+        // ============================================================
 
         public IActionResult Index()
         {
-            // Recieve the list of generated files from TempData and pass it to the view
             if (TempData["ArchivosGenerados"] != null)
             {
                 string json = TempData["ArchivosGenerados"]!.ToString()!;
@@ -44,14 +45,14 @@ namespace GestorArchivos_RRHH.Controllers
                 ViewBag.CarpetaIncapacidades = null;
             }
 
-            // Mesage for errors
             ViewBag.Error = TempData["Error"]?.ToString();
 
-            string carpetaDestino = Request.Cookies["CarpetaDestinoIncapacidades"];
+            string? carpetaDestino = Request.Cookies["CarpetaDestinoIncapacidades"];
 
             if (string.IsNullOrWhiteSpace(carpetaDestino))
             {
                 carpetaDestino = _configuration["RutasArchivos:Incapacidades"];
+
                 if (!string.IsNullOrWhiteSpace(carpetaDestino))
                 {
                     CookieOptions options = new CookieOptions
@@ -69,180 +70,19 @@ namespace GestorArchivos_RRHH.Controllers
             return View();
         }
 
-<<<<<<< HEAD
 
-        // =========================================
-        // PROCESAR INCAPACIDADES
-        // =========================================
-
-        [HttpPost]
-        public async Task<IActionResult> Procesar(
-            IFormFile pdfIncapacidad
-        )
-        {
-            if (pdfIncapacidad == null ||
-                pdfIncapacidad.Length == 0)
-            {
-                ViewBag.Error =
-                    "Debes seleccionar un archivo PDF.";
-
-                return View("Index");
-            }
-
-
-            bool esPdf =
-                pdfIncapacidad.ContentType.Equals(
-                    "application/pdf",
-                    StringComparison.OrdinalIgnoreCase
-                )
-                ||
-                pdfIncapacidad.FileName.EndsWith(
-                    ".pdf",
-                    StringComparison.OrdinalIgnoreCase
-                );
-
-
-            if (!esPdf)
-            {
-                ViewBag.Error =
-                    "El archivo seleccionado debe ser un PDF.";
-
-                return View("Index");
-            }
-
-
-            // Carpeta temporal para el PDF original
-            string carpetaTemporal =
-                Path.Combine(
-                    Path.GetTempPath(),
-                    "GestorArchivosRRHH",
-                    "Temporal"
-                );
-
-
-            Directory.CreateDirectory(
-                carpetaTemporal
-            );
-
-
-            string rutaPdfOriginal =
-                Path.Combine(
-                    carpetaTemporal,
-                    $"{Guid.NewGuid()}.pdf"
-                );
-
-
-            /*
-             * Las incapacidades individuales
-             * se generan temporalmente aquí.
-             */
-            string carpetaIncapacidades =
-                Path.Combine(
-                    Path.GetTempPath(),
-                    "GestorArchivosRRHH",
-                    "Incapacidades"
-                );
-
-
-            Directory.CreateDirectory(
-                carpetaIncapacidades
-            );
-
-
-            try
-            {
-                // Guardar temporalmente el PDF subido
-                using (
-                    FileStream stream =
-                        new FileStream(
-                            rutaPdfOriginal,
-                            FileMode.Create
-                        )
-                )
-                {
-                    await pdfIncapacidad.CopyToAsync(
-                        stream
-                    );
-                }
-
-
-                /*
-                 * INCAPACIDADES:
-                 *
-                 * 1 página = 1 PDF individual
-                 */
-                PdfSplitService pdfSplitService =
-                    new PdfSplitService();
-
-
-                int cantidadGenerada =
-                    pdfSplitService.DividirPdf(
-                        rutaPdfOriginal,
-                        carpetaIncapacidades,
-                        paginasPorDocumento: 1,
-                        prefijoArchivo: "Incapacidad"
-                    );
-
-
-                // Obtener nombres de los archivos generados
-                List<string> archivosGenerados =
-                    Directory
-                        .GetFiles(
-                            carpetaIncapacidades,
-                            "Incapacidad_*.pdf"
-                        )
-                        .Select(
-                            ruta =>
-                                Path.GetFileName(ruta)
-                        )
-                        .OrderBy(
-                            nombre => nombre
-                        )
-                        .ToList();
-
-
-                ViewBag.ArchivosGenerados =
-                    archivosGenerados;
-
-
-                ViewBag.MensajeExito =
-                    $"Proceso completado correctamente. " +
-                    $"Se generaron {cantidadGenerada} incapacidades.";
-
-
-                return View("Index");
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error =
-                    ex.Message;
-
-
-                return View("Index");
-            }
-            finally
-            {
-                // Eliminar únicamente el PDF grande temporal
-                if (
-                    System.IO.File.Exists(
-                        rutaPdfOriginal
-                    )
-                )
-                {
-                    System.IO.File.Delete(
-                        rutaPdfOriginal
-                    );
-=======
-        // Post procesing incapacidades
+        // ============================================================
+        // POST: INCAPACIDAD/PROCESAR
+        // Divide el PDF y genera una incapacidad por cada código
+        // ============================================================
 
         [HttpPost]
         public async Task<IActionResult> Procesar(
             IFormFile pdfIncapacidad,
             IFormFile archivoExcel,
-            string carpetaDestino = null)
+            string? carpetaDestino = null)
         {
-            // Validate PDF
-
+            // ---------- Validar PDF ----------
             if (pdfIncapacidad == null || pdfIncapacidad.Length == 0)
             {
                 TempData["Error"] = "Debes seleccionar un archivo PDF.";
@@ -258,8 +98,7 @@ namespace GestorArchivos_RRHH.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Validate EXCEL
-
+            // ---------- Validar Excel ----------
             if (archivoExcel == null || archivoExcel.Length == 0)
             {
                 TempData["Error"] = "Debes seleccionar un archivo Excel con los códigos.";
@@ -274,12 +113,11 @@ namespace GestorArchivos_RRHH.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // ---------- Resolver carpeta destino ----------
             string? carpetaFinal = carpetaDestino;
 
             if (string.IsNullOrWhiteSpace(carpetaFinal))
-            {
                 carpetaFinal = _configuration["RutasArchivos:Incapacidades"];
-            }
 
             if (string.IsNullOrWhiteSpace(carpetaFinal))
             {
@@ -297,6 +135,7 @@ namespace GestorArchivos_RRHH.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // ---------- Guardar preferencias ----------
             CookieOptions options = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(365),
@@ -307,10 +146,12 @@ namespace GestorArchivos_RRHH.Controllers
 
             string historial = Request.Cookies["HistorialCarpetasIncapacidades"] ?? "";
             var carpetas = historial.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
             if (!carpetas.Contains(carpetaFinal))
             {
                 carpetas.Add(carpetaFinal);
                 string nuevoHistorial = string.Join("|", carpetas);
+
                 CookieOptions historialOptions = new CookieOptions
                 {
                     Expires = DateTime.Now.AddDays(365),
@@ -320,8 +161,7 @@ namespace GestorArchivos_RRHH.Controllers
                 Response.Cookies.Append("HistorialCarpetasIncapacidades", nuevoHistorial, historialOptions);
             }
 
-            // tempora folder 
-
+            // ---------- Carpeta temporal ----------
             string carpetaTemporal = Path.Combine(Path.GetTempPath(), "GestorArchivosRRHH", "Temporal");
             Directory.CreateDirectory(carpetaTemporal);
 
@@ -329,14 +169,13 @@ namespace GestorArchivos_RRHH.Controllers
 
             try
             {
-                // save temporal folder 
+                // Guardar PDF temporal
                 using (FileStream stream = new FileStream(rutaPdfOriginal, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     await pdfIncapacidad.CopyToAsync(stream);
                 }
 
-                // Read codes 
-
+                // Leer códigos y contar páginas
                 ExcelCodeService excelCodeService = new ExcelCodeService();
                 int cantidadPaginas = _pdfSplitService.ObtenerCantidadPaginas(rutaPdfOriginal);
                 List<string> codigos = excelCodeService.LeerCodigos(archivoExcel);
@@ -347,10 +186,7 @@ namespace GestorArchivos_RRHH.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Validate that the number of codes matches the number of
-
-                // incapacidades (3 páginas por incapacidad)
-
+                // ---------- Validar páginas completas ----------
                 if (cantidadPaginas % PAGINAS_POR_INCAPACIDAD != 0)
                 {
                     int paginasSobrantes = cantidadPaginas % PAGINAS_POR_INCAPACIDAD;
@@ -364,17 +200,18 @@ namespace GestorArchivos_RRHH.Controllers
 
                 int cantidadIncapacidades = cantidadPaginas / PAGINAS_POR_INCAPACIDAD;
 
+                // ---------- Validar códigos vs incapacidades ----------
                 if (codigos.Count != cantidadIncapacidades)
                 {
                     TempData["Error"] =
                         $"El PDF generará {cantidadIncapacidades} incapacidad(es) " +
-                        $"(con {PAGINAS_POR_INCAPACIDAD} páginas cada una), " +
+                        $"(con {PAGINAS_POR_INCAPACIDAD} página(s) cada una), " +
                         $"pero el Excel contiene {codigos.Count} código(s). " +
                         $"La cantidad de códigos debe coincidir con la cantidad de incapacidades.";
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Divide the PDF into groups of 3 pages and save them with the corresponding codes
+                // ---------- Dividir el PDF ----------
                 var resultado = _pdfSplitService.DividirPdfIncapacidades(
                     rutaPdfOriginal,
                     carpetaFinal,
@@ -383,27 +220,23 @@ namespace GestorArchivos_RRHH.Controllers
                 );
 
                 int cantidadGenerada = resultado.cantidadGenerada;
-                List<string> archivosGenerados = resultado.nombresArchivos;
-
-                // Verificar que los archivos existen
-                archivosGenerados = archivosGenerados
+                List<string> archivosGenerados = resultado.nombresArchivos
                     .Where(nombre => System.IO.File.Exists(Path.Combine(carpetaFinal, nombre)))
                     .ToList();
 
-                // save result 
-
+                // ---------- Guardar resultado ----------
                 TempData["ArchivosGenerados"] = JsonSerializer.Serialize(archivosGenerados);
-                TempData["MensajeExito"] = $" Proceso completado. Se generaron {cantidadGenerada} incapacidades.";
+                TempData["MensajeExito"] = $"Proceso completado. Se generaron {cantidadGenerada} incapacidades.";
                 TempData["CarpetaIncapacidades"] = carpetaFinal;
 
-                // Open folder automatically
+                // Abrir carpeta automáticamente (solo Windows)
                 try
                 {
                     System.Diagnostics.Process.Start("explorer.exe", carpetaFinal);
                 }
                 catch
                 {
-                    //if failed 
+                    // Si falla, no interrumpe
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -415,7 +248,7 @@ namespace GestorArchivos_RRHH.Controllers
             }
             finally
             {
-                // Delete pdf temporal
+                // Borrar PDF temporal
                 if (System.IO.File.Exists(rutaPdfOriginal))
                 {
                     try
@@ -424,119 +257,36 @@ namespace GestorArchivos_RRHH.Controllers
                     }
                     catch
                     {
-                        //Not interrupted 
+                        // No interrumpe
                     }
->>>>>>> Diego
                 }
             }
         }
 
-<<<<<<< HEAD
 
-        // =========================================
-        // DESCARGAR INCAPACIDAD
-        // =========================================
-
-        [HttpGet]
-        public IActionResult Descargar(
-            string nombreArchivo
-        )
-        {
-            if (
-                string.IsNullOrWhiteSpace(
-                    nombreArchivo
-                )
-            )
-=======
-        // Get pdf incapacidad by name
+        // ============================================================
+        // GET: INCAPACIDAD/DESCARGAR
+        // Descarga un PDF por nombre
+        // ============================================================
 
         [HttpGet]
         public IActionResult Descargar(string nombreArchivo)
         {
             if (string.IsNullOrWhiteSpace(nombreArchivo))
->>>>>>> Diego
             {
                 return NotFound();
             }
 
-<<<<<<< HEAD
-
-            // Protección contra rutas externas
-            nombreArchivo =
-                Path.GetFileName(
-                    nombreArchivo
-                );
-
-
-            string carpetaIncapacidades =
-                Path.Combine(
-                    Path.GetTempPath(),
-                    "GestorArchivosRRHH",
-                    "Incapacidades"
-                );
-
-
-            string rutaArchivo =
-                Path.Combine(
-                    carpetaIncapacidades,
-                    nombreArchivo
-                );
-
-
-            if (
-                !System.IO.File.Exists(
-                    rutaArchivo
-                )
-            )
-            {
-                return NotFound();
-            }
-
-
-            byte[] contenido =
-                System.IO.File.ReadAllBytes(
-                    rutaArchivo
-                );
-
-
-            /*
-             * Después de enviar el PDF al navegador,
-             * eliminar la copia temporal.
-             */
-            Response.OnCompleted(
-                () =>
-                {
-                    try
-                    {
-                        if (
-                            System.IO.File.Exists(
-                                rutaArchivo
-                            )
-                        )
-                        {
-                            System.IO.File.Delete(
-                                rutaArchivo
-                            );
-                        }
-                    }
-                    catch
-                    {
-                        // No interrumpir la descarga
-                        // si falla la limpieza temporal.
-                    }
-
-
-                    return Task.CompletedTask;
-                }
-            );
-
-
-            return File(
-                contenido,
-=======
+            // Protección contra path traversal
             nombreArchivo = Path.GetFileName(nombreArchivo);
 
-            string? carpetaIncapacidades = _configuration["RutasArchivos:Incapacidades"];
+            // 1) Cookie → 2) appsettings
+            string? carpetaIncapacidades = Request.Cookies["CarpetaDestinoIncapacidades"];
+
+            if (string.IsNullOrWhiteSpace(carpetaIncapacidades))
+            {
+                carpetaIncapacidades = _configuration["RutasArchivos:Incapacidades"];
+            }
 
             if (string.IsNullOrWhiteSpace(carpetaIncapacidades))
             {
@@ -552,7 +302,6 @@ namespace GestorArchivos_RRHH.Controllers
 
             return PhysicalFile(
                 rutaArchivo,
->>>>>>> Diego
                 "application/pdf",
                 nombreArchivo
             );
